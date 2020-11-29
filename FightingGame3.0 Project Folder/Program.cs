@@ -18,14 +18,19 @@ namespace FightingGame3._0_Project
                 acc = _acc;
             }
         }
-        class Moveset
+
+        class Fighter
         {
+            public string name = "FIGHTER";
+            public int fullHP = 400;
             public Move move1 = new Move("", 0, 0);
             public Move move2 = new Move("", 0, 0);
             public Move move3 = new Move("", 0, 0);
             public Move move4 = new Move("", 0, 0);
-            public Moveset(Move _move1, Move _move2, Move _move3, Move _move4)
+            public Fighter(string _name, int _fullHP, Move _move1, Move _move2, Move _move3, Move _move4)
             {
+                name = _name;
+                fullHP = _fullHP;
                 move1 = _move1;
                 move2 = _move2;
                 move3 = _move3;
@@ -44,37 +49,37 @@ namespace FightingGame3._0_Project
             int hideBox = 0;
             int damage = 0;
             int randomMove = 1;
+            Random generator = new Random();
+
+            Move fMove = new Move("", 0, 0);
+            Move oMove = new Move("", 0, 0);
+            Fighter fFighter = new Fighter("", 0, fMove, fMove, fMove, fMove);
+            int fHP = 0;
+            Fighter oFighter = new Fighter("", 0, oMove, oMove, oMove, oMove);
+            int oHP = 0;
 
             Move[] moves = new Move[]{
                 new Move("BONK", 100, 90),
                 new Move("HIT PAN", 150, 80),
-                new Move("CHEESEBORG", 90, 100),
+                new Move("CHEESEBORG", 100, 100),
                 new Move("WAR CRIME", 200, 60),
 
-                new Move("MONKE FLIP", 100, 90),
-                new Move("SPINNING GORILLA", 150, 80),
-                new Move("REJECT HUMANITY", 90, 100),
-                new Move("CHIMP EVENT", 200, 60)
+                new Move("MONKE FLIP", 60, 90),
+                new Move("SPINNING GORILLA", 100, 80),
+                new Move("REJECT HUMANITY", 50, 100),
+                new Move("CHIMP EVENT", 150, 60)
             };
 
-            Moveset walterMoveset = new Moveset(moves[0], moves[1], moves[2], moves[3]);
-            Moveset gorillaMoveset = new Moveset(moves[4], moves[5], moves[6], moves[7]);
+            Fighter walter = new Fighter("WALTER", 400, moves[0], moves[1], moves[2], moves[3]);
+            Fighter gorilla = new Fighter("GORILLA", 400, moves[4], moves[5], moves[6], moves[7]);
 
-            string fName = "WALTER";
-            int fFullHP = 400;
-            int fHP = 400;
-            Move fMove = new Move("", 0, 0);
-            Moveset fMoveset = walterMoveset;
+            fFighter = walter;
+            oFighter = gorilla;
 
-            string oName = "GORILLA";
-            int oFullHP = 400;
-            int oHP = 400;
-            Move oMove = new Move("", 0, 0);
-            Moveset oMoveset = gorillaMoveset;
-
+            fHP = walter.fullHP;
+            oHP = gorilla.fullHP;
 
             Vector2 select = new Vector2(10, 510);
-            Random generator = new Random();
             Texture2D walterT = Raylib.LoadTexture("walter.png");
 
             Color border1 = new Color(214, 214, 214, 255);
@@ -93,11 +98,11 @@ namespace FightingGame3._0_Project
                 Raylib.DrawRectangle(0, 500, 1000, 300, border2);
                 Raylib.DrawRectangle(10, 510, 980, 280, boxgreen);
 
-                Raylib.DrawRectangle(55, 20, fFullHP, 20, healthred);     //Player health bar
-                Raylib.DrawRectangle(55, 20, fHP, 20, healthgreen);
+                Raylib.DrawRectangle(55, 20, 400, 20, healthred);     //Player health bar
+                Raylib.DrawRectangle(55, 20, fHP * 400 / fFighter.fullHP, 20, healthgreen);
 
-                Raylib.DrawRectangle(555, 20, oFullHP, 20, healthred);     //Opponent health bar
-                Raylib.DrawRectangle(555, 20, oHP, 20, healthgreen);
+                Raylib.DrawRectangle(555, 20, 400, 20, healthred);     //Opponent health bar
+                Raylib.DrawRectangle(555, 20, oHP * 400 / oFighter.fullHP, 20, healthgreen);
 
 
                 if (fighting == true)
@@ -105,46 +110,65 @@ namespace FightingGame3._0_Project
                     switch (battlePage)
                     {
                         case 1:
-                            hideBox = Text("WHAT WILL " + fName + " DO?");
+                            hideBox = Text("WHAT WILL " + fFighter.name + " DO?");
                             break;
                         case 2:                                                    //Select move
                             hideBox = 0;
                             Raylib.DrawRectangle(10, 645, 980, 10, border2);
                             Raylib.DrawRectangle(495, 510, 10, 280, border2);
                             select = Select(select, boxyellow);
-                            Raylib.DrawText(fMoveset.move1.name, 20, 550, 48, Color.BLACK);
-                            Raylib.DrawText(fMoveset.move2.name, 520, 550, 48, Color.BLACK);
-                            Raylib.DrawText(fMoveset.move3.name, 20, 700, 48, Color.BLACK);
-                            Raylib.DrawText(fMoveset.move4.name, 520, 700, 48, Color.BLACK);
+                            Raylib.DrawText(fFighter.move1.name, 20, 550, 48, Color.BLACK);
+                            Raylib.DrawText(fFighter.move2.name, 520, 550, 48, Color.BLACK);
+                            Raylib.DrawText(fFighter.move3.name, 20, 700, 48, Color.BLACK);
+                            Raylib.DrawText(fFighter.move4.name, 520, 700, 48, Color.BLACK);
                             break;
                         case 3:                                      //Used move
                             if (select.X == 10 && select.Y == 510)
                             {
-                                fMove = fMoveset.move1;
+                                fMove = fFighter.move1;
                             }
                             else if (select.X == 505 && select.Y == 510)
                             {
-                                fMove = fMoveset.move2;
+                                fMove = fFighter.move2;
                             }
                             else if (select.X == 10 && select.Y == 655)
                             {
-                                fMove = fMoveset.move3;
+                                fMove = fFighter.move3;
                             }
                             else
                             {
-                                fMove = fMoveset.move4;
+                                fMove = fFighter.move4;
                             }
-                            MoveText(fName, fMove.name);
+                            MoveText(fFighter.name, fMove.name);
                             break;
                         case 4:                                      //Calculate damage / decide opponents next move
-                            damage = Attack(generator, fMove.atk, fMove.acc);
-                            oHP = oHP - damage;
-                            MoveText(fName, fMove.name);
+                            if (fMove == fFighter.move3)
+                            {
+                                fHP = fHP + fMove.atk;
+                                if (fHP > fFighter.fullHP)
+                                {
+                                    fHP = fFighter.fullHP;
+                                }
+                            }
+                            else
+                            {
+                                damage = Attack(generator, fMove.atk, fMove.acc);
+                                oHP = oHP - damage;
+                            }
+                            MoveText(fFighter.name, fMove.name);
                             randomMove = generator.Next(1, 5);
                             battlePage++;
                             break;
                         case 5:                                      //Tell damage
-                            if (damage > 0)
+                            if (fMove == fFighter.move3 && fHP == fFighter.fullHP)
+                            {
+                                Text("HP FULLY RESTORED!");
+                            }
+                            else if (fMove == fFighter.move3)
+                            {
+                                Text(fMove.atk + " HP RESTORED!");
+                            }
+                            else if (damage > 0)
                             {
                                 Text(damage + " DAMAGE!");
                             }
@@ -162,29 +186,49 @@ namespace FightingGame3._0_Project
                             }
                             if (randomMove == 1)
                             {
-                                oMove = oMoveset.move1;
+                                oMove = oFighter.move1;
                             }
                             else if (randomMove == 2)
                             {
-                                oMove = oMoveset.move2;
+                                oMove = oFighter.move2;
                             }
                             else if (randomMove == 3)
                             {
-                                oMove = oMoveset.move3;
+                                oMove = oFighter.move3;
                             }
                             else
                             {
-                                oMove = oMoveset.move4;
+                                oMove = oFighter.move4;
                             }
-                            MoveText(oName, oMove.name);
+                            MoveText(oFighter.name, oMove.name);
                             break;
                         case 7:                                       //Opponent calculate damage
-                            damage = Attack(generator, oMove.atk, oMove.acc);
-                            fHP = fHP - damage;
+                            if (oMove == oFighter.move3)
+                            {
+                                oHP = oHP + oMove.atk;
+                                if (oHP > oFighter.fullHP)
+                                {
+                                    oHP = oFighter.fullHP;
+                                }
+                            }
+                            else
+                            {
+                                damage = Attack(generator, oMove.atk, oMove.acc);
+                                fHP = fHP - damage;
+                            }
+                            MoveText(oFighter.name, oMove.name);
                             battlePage++;
                             break;
                         case 8:                                       //Opponent tell damage
-                            if (damage > 0)
+                            if (oHP == oFighter.fullHP)
+                            {
+                                Text("HP FULLY RESTORED!");
+                            }
+                            else if (oMove == oFighter.move3)
+                            {
+                                Text(oMove.atk + " HP RESTORED!");
+                            }
+                            else if (damage > 0)
                             {
                                 Text(damage + " DAMAGE!");
                             }
@@ -209,10 +253,10 @@ namespace FightingGame3._0_Project
                     switch (won)
                     {
                         case true:
-                            Text(fName + " WINS!");
+                            Text(fFighter.name + " WINS!");
                             break;
                         case false:
-                            Text(oName + " WINS!");
+                            Text(oFighter.name + " WINS!");
                             break;
                     }
                 }
