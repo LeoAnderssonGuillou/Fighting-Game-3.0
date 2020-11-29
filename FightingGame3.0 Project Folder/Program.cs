@@ -23,14 +23,16 @@ namespace FightingGame3._0_Project
         {
             public string name = "FIGHTER";
             public int fullHP = 400;
+            public Texture2D image;
             public Move move1 = new Move("", 0, 0);
             public Move move2 = new Move("", 0, 0);
             public Move move3 = new Move("", 0, 0);
             public Move move4 = new Move("", 0, 0);
-            public Fighter(string _name, int _fullHP, Move _move1, Move _move2, Move _move3, Move _move4)
+            public Fighter(string _name, int _fullHP, Texture2D _image, Move _move1, Move _move2, Move _move3, Move _move4)
             {
                 name = _name;
                 fullHP = _fullHP;
+                image = _image;
                 move1 = _move1;
                 move2 = _move2;
                 move3 = _move3;
@@ -51,11 +53,22 @@ namespace FightingGame3._0_Project
             int randomMove = 1;
             Random generator = new Random();
 
+            Texture2D walterT = Raylib.LoadTexture("walter.png");
+            Texture2D gorillaT = Raylib.LoadTexture("gorilla.png");
+            Texture2D floppaT = Raylib.LoadTexture("floppa.png");
+            Texture2D linusT = Raylib.LoadTexture("linus.png");
+
+            Rectangle fSize = new Rectangle(0, 0, 500, 500);
+            Vector2 fLocation = new Vector2(0, 0);
+            Rectangle oSize = new Rectangle(0, 0, -500, 500);
+            Vector2 oLocation = new Vector2(500, 0);
+            Vector2 select = new Vector2(10, 510);
+
             Move fMove = new Move("", 0, 0);
             Move oMove = new Move("", 0, 0);
-            Fighter fFighter = new Fighter("", 0, fMove, fMove, fMove, fMove);
+            Fighter fFighter = new Fighter("", 0, walterT, fMove, fMove, fMove, fMove);
             int fHP = 0;
-            Fighter oFighter = new Fighter("", 0, oMove, oMove, oMove, oMove);
+            Fighter oFighter = new Fighter("", 0, floppaT, oMove, oMove, oMove, oMove);
             int oHP = 0;
 
             Move[] moves = new Move[]{
@@ -67,20 +80,29 @@ namespace FightingGame3._0_Project
                 new Move("MONKE FLIP", 60, 90),
                 new Move("SPINNING GORILLA", 100, 80),
                 new Move("REJECT HUMANITY", 50, 100),
-                new Move("CHIMP EVENT", 150, 60)
+                new Move("CHIMP EVENT", 150, 60),
+
+                new Move("HISS", 100, 90),
+                new Move("ROAST", 150, 80),
+                new Move("MELON", 100, 100),
+                new Move("MEGA CHONK", 200, 60),
+
+                new Move("TECH TIP", 100, 90),
+                new Move("STARE", 150, 80),
+                new Move("RTX ON", 100, 100),
+                new Move("DROP", 200, 60)
             };
 
-            Fighter walter = new Fighter("WALTER", 400, moves[0], moves[1], moves[2], moves[3]);
-            Fighter gorilla = new Fighter("GORILLA", 400, moves[4], moves[5], moves[6], moves[7]);
+            Fighter walter = new Fighter("WALTER", 400, walterT, moves[0], moves[1], moves[2], moves[3]);
+            Fighter gorilla = new Fighter("GORILLA", 400, gorillaT, moves[4], moves[5], moves[6], moves[7]);
+            Fighter floppa = new Fighter("BIG FLOPPA", 400, floppaT, moves[8], moves[9], moves[10], moves[11]);
+            Fighter linus = new Fighter("LINUS", 400, linusT, moves[12], moves[13], moves[14], moves[15]);
 
-            fFighter = walter;
+            fFighter = linus;
             oFighter = gorilla;
 
             fHP = walter.fullHP;
             oHP = gorilla.fullHP;
-
-            Vector2 select = new Vector2(10, 510);
-            Texture2D walterT = Raylib.LoadTexture("walter.png");
 
             Color border1 = new Color(214, 214, 214, 255);
             Color border2 = new Color(150, 150, 150, 255);
@@ -104,6 +126,8 @@ namespace FightingGame3._0_Project
                 Raylib.DrawRectangle(555, 20, 400, 20, healthred);     //Opponent health bar
                 Raylib.DrawRectangle(555, 20, oHP * 400 / oFighter.fullHP, 20, healthgreen);
 
+                Raylib.DrawTextureRec(fFighter.image, fSize, fLocation, Color.WHITE);
+                Raylib.DrawTextureRec(oFighter.image, oSize, oLocation, Color.WHITE);
 
                 if (fighting == true)
                 {
@@ -278,8 +302,6 @@ namespace FightingGame3._0_Project
 
                 //Raylib.DrawRectangle(10 + 485 - hideBox, 510, hideBox, 280, boxgreen);
 
-                Raylib.DrawTexture(walterT, 0, 0, Color.WHITE);
-                Raylib.DrawTexture(walterT, 500, 0, Color.WHITE);
 
                 Raylib.EndDrawing();
             }
