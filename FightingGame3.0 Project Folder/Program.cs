@@ -11,11 +11,13 @@ namespace FightingGame3._0_Project
             public string name = "BONK";
             public int atk = 100;
             public int acc = 90;
-            public Move(string _name, int _atk, int _acc)
+            public Sound sfx;
+            public Move(string _name, int _atk, int _acc, Sound _sfx)
             {
                 name = _name;
                 atk = _atk;
                 acc = _acc;
+                sfx = _sfx;
             }
         }
 
@@ -24,10 +26,10 @@ namespace FightingGame3._0_Project
             public string name = "FIGHTER";
             public int fullHP = 400;
             public Texture2D image;
-            public Move move1 = new Move("", 0, 0);
-            public Move move2 = new Move("", 0, 0);
-            public Move move3 = new Move("", 0, 0);
-            public Move move4 = new Move("", 0, 0);
+            public Move move1;
+            public Move move2;
+            public Move move3;
+            public Move move4;
             public Fighter(string _name, int _fullHP, Texture2D _image, Move _move1, Move _move2, Move _move3, Move _move4)
             {
                 name = _name;
@@ -42,6 +44,7 @@ namespace FightingGame3._0_Project
         static void Main(string[] args)
         {
             Raylib.InitWindow(1000, 800, "Walter Battle 2021");
+            Raylib.InitAudioDevice();
 
             bool fighting = true;
             bool won = true;
@@ -53,10 +56,15 @@ namespace FightingGame3._0_Project
             int randomMove = 1;
             Random generator = new Random();
 
-            Texture2D walterT = Raylib.LoadTexture("walter.png");
-            Texture2D gorillaT = Raylib.LoadTexture("gorilla.png");
-            Texture2D floppaT = Raylib.LoadTexture("floppa.png");
-            Texture2D linusT = Raylib.LoadTexture("linus.png");
+            Texture2D walterT = Raylib.LoadTexture("media/walter.png");
+            Texture2D gorillaT = Raylib.LoadTexture("media/gorilla.png");
+            Texture2D floppaT = Raylib.LoadTexture("media/floppa.png");
+            Texture2D linusT = Raylib.LoadTexture("media/linus.png");
+
+            Sound hit = Raylib.LoadSound("media/hit.mp3");
+            Sound heal = Raylib.LoadSound("media/heal.mp3");
+            Sound bonk = Raylib.LoadSound("media/bonk.mp3");
+            Sound bong = Raylib.LoadSound("media/bong.mp3");
 
             Rectangle fSize = new Rectangle(0, 0, 500, 500);
             Vector2 fLocation = new Vector2(0, 0);
@@ -64,33 +72,33 @@ namespace FightingGame3._0_Project
             Vector2 oLocation = new Vector2(500, 0);
             Vector2 select = new Vector2(10, 510);
 
-            Move fMove = new Move("", 0, 0);
-            Move oMove = new Move("", 0, 0);
+            Move fMove = new Move("", 0, 0, bonk);
+            Move oMove = new Move("", 0, 0, bonk);
             Fighter fFighter = new Fighter("", 0, walterT, fMove, fMove, fMove, fMove);
             int fHP = 0;
             Fighter oFighter = new Fighter("", 0, floppaT, oMove, oMove, oMove, oMove);
             int oHP = 0;
 
             Move[] moves = new Move[]{
-                new Move("BONK", 100, 90),
-                new Move("HIT PAN", 150, 80),
-                new Move("CHEESEBORG", 100, 100),
-                new Move("WAR CRIME", 200, 60),
+                new Move("BONK", 100, 90, bonk),
+                new Move("HIT PAN", 150, 80, bong),
+                new Move("CHEESEBORG", 100, 100, heal),
+                new Move("WAR CRIME", 200, 60, hit),
 
-                new Move("MONKE FLIP", 60, 90),
-                new Move("SPINNING GORILLA", 100, 80),
-                new Move("REJECT HUMANITY", 50, 100),
-                new Move("CHIMP EVENT", 150, 60),
+                new Move("MONKE FLIP", 60, 90, hit),
+                new Move("SPINNING GORILLA", 100, 80, hit),
+                new Move("REJECT HUMANITY", 50, 100, heal),
+                new Move("CHIMP EVENT", 150, 60, hit),
 
-                new Move("HISS", 100, 90),
-                new Move("ROAST", 150, 80),
-                new Move("MELON", 100, 100),
-                new Move("MEGA CHONK", 200, 60),
+                new Move("HISS", 100, 90, hit),
+                new Move("ROAST", 150, 80, hit),
+                new Move("MELON", 100, 100, heal),
+                new Move("MEGA CHONK", 200, 60, hit),
 
-                new Move("TECH TIP", 100, 90),
-                new Move("STARE", 150, 80),
-                new Move("RTX ON", 100, 100),
-                new Move("DROP", 200, 60)
+                new Move("TECH TIP", 100, 90, hit),
+                new Move("STARE", 150, 80, hit),
+                new Move("RTX ON", 100, 100, heal),
+                new Move("DROP", 200, 60, hit)
             };
 
             Fighter walter = new Fighter("WALTER", 400, walterT, moves[0], moves[1], moves[2], moves[3]);
@@ -98,14 +106,14 @@ namespace FightingGame3._0_Project
             Fighter floppa = new Fighter("BIG FLOPPA", 400, floppaT, moves[8], moves[9], moves[10], moves[11]);
             Fighter linus = new Fighter("LINUS", 400, linusT, moves[12], moves[13], moves[14], moves[15]);
 
-            fFighter = linus;
+            fFighter = walter;
             oFighter = gorilla;
 
             fHP = walter.fullHP;
             oHP = gorilla.fullHP;
 
-            Color border1 = new Color(214, 214, 214, 255);
-            Color border2 = new Color(150, 150, 150, 255);
+            Color bordergrey1 = new Color(214, 214, 214, 255);
+            Color bordergrey2 = new Color(150, 150, 150, 255);
             Color boxyellow = new Color(255, 255, 156, 255);
             Color boxgreen = new Color(187, 255, 156, 255);
             Color healthgreen = new Color(123, 255, 36, 255);
@@ -115,9 +123,9 @@ namespace FightingGame3._0_Project
             while (!Raylib.WindowShouldClose())
             {
                 Raylib.BeginDrawing();
-                Raylib.ClearBackground(border1);                    //Background
+                Raylib.ClearBackground(bordergrey1);                    //Background
                 Raylib.DrawRectangle(10, 10, 980, 480, boxyellow);
-                Raylib.DrawRectangle(0, 500, 1000, 300, border2);
+                Raylib.DrawRectangle(0, 500, 1000, 300, bordergrey2);
                 Raylib.DrawRectangle(10, 510, 980, 280, boxgreen);
 
                 Raylib.DrawRectangle(55, 20, 400, 20, healthred);     //Player health bar
@@ -134,12 +142,12 @@ namespace FightingGame3._0_Project
                     switch (battlePage)
                     {
                         case 1:
-                            hideBox = Text("WHAT WILL " + fFighter.name + " DO?");
+                            Text("WHAT WILL " + fFighter.name + " DO?");
                             break;
                         case 2:                                                    //Select move
                             hideBox = 0;
-                            Raylib.DrawRectangle(10, 645, 980, 10, border2);
-                            Raylib.DrawRectangle(495, 510, 10, 280, border2);
+                            Raylib.DrawRectangle(10, 645, 980, 10, bordergrey2);
+                            Raylib.DrawRectangle(495, 510, 10, 280, bordergrey2);
                             select = Select(select, boxyellow);
                             Raylib.DrawText(fFighter.move1.name, 20, 550, 48, Color.BLACK);
                             Raylib.DrawText(fFighter.move2.name, 520, 550, 48, Color.BLACK);
@@ -181,6 +189,7 @@ namespace FightingGame3._0_Project
                             }
                             MoveText(fFighter.name, fMove.name);
                             randomMove = generator.Next(1, 5);
+                            Raylib.PlaySound(fMove.sfx);
                             battlePage++;
                             break;
                         case 5:                                      //Tell damage
@@ -241,6 +250,7 @@ namespace FightingGame3._0_Project
                                 fHP = fHP - damage;
                             }
                             MoveText(oFighter.name, oMove.name);
+                            Raylib.PlaySound(oMove.sfx);
                             battlePage++;
                             break;
                         case 8:                                       //Opponent tell damage
@@ -285,11 +295,11 @@ namespace FightingGame3._0_Project
                     }
                 }
 
-
                 if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)
                 {
                     battlePage++;
-                    cooldown = 300;
+                    cooldown = 200;
+                    hideBox = 980;
                 }
                 if (cooldown > 0)
                 {
@@ -297,20 +307,17 @@ namespace FightingGame3._0_Project
                 }
                 if (hideBox > 0)
                 {
-                    hideBox = hideBox - 5;
+                    hideBox = hideBox - 4;
                 }
-
-                //Raylib.DrawRectangle(10 + 485 - hideBox, 510, hideBox, 280, boxgreen);
+                Raylib.DrawRectangle(10 + 980 - hideBox, 510, hideBox, 280, boxgreen);
 
 
                 Raylib.EndDrawing();
             }
         }
-        static int Text(string text)
+        static void Text(string text)
         {
             Raylib.DrawText(text, 20, 520, 48, Color.BLACK);
-            int box = 485;
-            return box;
         }
         static void MoveText(string name, string move)
         {
