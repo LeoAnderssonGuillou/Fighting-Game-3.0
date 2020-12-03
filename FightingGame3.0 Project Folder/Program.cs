@@ -41,6 +41,8 @@ namespace FightingGame3._0_Project
                 move4 = _move4;
             }
         }
+
+
         static void Main(string[] args)
         {
             Raylib.InitWindow(1000, 800, "Walter Battle 2021");
@@ -48,6 +50,16 @@ namespace FightingGame3._0_Project
 
             bool fighting = true;
             bool won = true;
+
+            bool fDamaged = false;
+            int fBlinkCooldown = 0;
+            bool fHide = false;
+            int fTimesBlinked = 0;
+
+            bool oDamaged = false;
+            int oBlinkCooldown = 0;
+            bool oHide = false;
+            int oTimesBlinked = 0;
 
             int battlePage = 1;
             int cooldown = 0;
@@ -75,9 +87,11 @@ namespace FightingGame3._0_Project
             Move fMove = new Move("", 0, 0, bonk);
             Move oMove = new Move("", 0, 0, bonk);
             Fighter fFighter = new Fighter("", 0, walterT, fMove, fMove, fMove, fMove);
-            int fHP = 0;
             Fighter oFighter = new Fighter("", 0, floppaT, oMove, oMove, oMove, oMove);
+            int fHP = 0;
             int oHP = 0;
+            Color fColor = Color.WHITE;
+            Color oColor = Color.WHITE;
 
             Move[] moves = new Move[]{
                 new Move("BONK", 100, 90, bonk),
@@ -106,8 +120,8 @@ namespace FightingGame3._0_Project
             Fighter floppa = new Fighter("BIG FLOPPA", 400, floppaT, moves[8], moves[9], moves[10], moves[11]);
             Fighter linus = new Fighter("LINUS", 400, linusT, moves[12], moves[13], moves[14], moves[15]);
 
-            fFighter = walter;
-            oFighter = gorilla;
+            fFighter = floppa;
+            oFighter = linus;
 
             fHP = walter.fullHP;
             oHP = gorilla.fullHP;
@@ -118,6 +132,7 @@ namespace FightingGame3._0_Project
             Color boxgreen = new Color(187, 255, 156, 255);
             Color healthgreen = new Color(123, 255, 36, 255);
             Color healthred = new Color(255, 94, 94, 255);
+            Color invisible = new Color(255, 255, 255, 60);
 
 
             while (!Raylib.WindowShouldClose())
@@ -134,8 +149,8 @@ namespace FightingGame3._0_Project
                 Raylib.DrawRectangle(555, 20, 400, 20, healthred);     //Opponent health bar
                 Raylib.DrawRectangle(555, 20, oHP * 400 / oFighter.fullHP, 20, healthgreen);
 
-                Raylib.DrawTextureRec(fFighter.image, fSize, fLocation, Color.WHITE);
-                Raylib.DrawTextureRec(oFighter.image, oSize, oLocation, Color.WHITE);
+                Raylib.DrawTextureRec(fFighter.image, fSize, fLocation, fColor);   //Draw figthers
+                Raylib.DrawTextureRec(oFighter.image, oSize, oLocation, oColor);
 
                 if (fighting == true)
                 {
@@ -154,7 +169,7 @@ namespace FightingGame3._0_Project
                             Raylib.DrawText(fFighter.move3.name, 20, 700, 48, Color.BLACK);
                             Raylib.DrawText(fFighter.move4.name, 520, 700, 48, Color.BLACK);
                             break;
-                        case 3:                                      //Used move
+                        case 3:                                      //Tell what move is being used
                             if (select.X == 10 && select.Y == 510)
                             {
                                 fMove = fFighter.move1;
@@ -173,8 +188,8 @@ namespace FightingGame3._0_Project
                             }
                             MoveText(fFighter.name, fMove.name);
                             break;
-                        case 4:                                      //Calculate damage / decide opponents next move
-                            if (fMove == fFighter.move3)
+                        case 4:                                      //Calculate result, randomize opponents next move
+                            if (fMove == fFighter.move3)             //and play sfx. Happnes exactly once per round.
                             {
                                 fHP = fHP + fMove.atk;
                                 if (fHP > fFighter.fullHP)
@@ -189,10 +204,17 @@ namespace FightingGame3._0_Project
                             }
                             MoveText(fFighter.name, fMove.name);
                             randomMove = generator.Next(1, 5);
-                            Raylib.PlaySound(fMove.sfx);
+                            if (damage > 0)
+                            {
+                                Raylib.PlaySound(fMove.sfx);
+                                if (fMove != fFighter.move3)
+                                {
+                                    oDamaged = true;
+                                }
+                            }
                             battlePage++;
                             break;
-                        case 5:                                      //Tell damage
+                        case 5:                                      //Tell result
                             if (fMove == fFighter.move3 && fHP == fFighter.fullHP)
                             {
                                 Text("HP FULLY RESTORED!");
@@ -210,7 +232,7 @@ namespace FightingGame3._0_Project
                                 Text("MISS!");
                             }
                             break;
-                        case 6:                                      //Check if won / Opponent used move
+                        case 6:                                      //Check if won / Tell opponent uses move
                             if (oHP <= 0)
                             {
                                 fighting = false;
@@ -235,8 +257,8 @@ namespace FightingGame3._0_Project
                             }
                             MoveText(oFighter.name, oMove.name);
                             break;
-                        case 7:                                       //Opponent calculate damage
-                            if (oMove == oFighter.move3)
+                        case 7:                                       //Calculate result of opponents move and play sfx.
+                            if (oMove == oFighter.move3)              //Happnes exactly once per round.
                             {
                                 oHP = oHP + oMove.atk;
                                 if (oHP > oFighter.fullHP)
@@ -250,10 +272,17 @@ namespace FightingGame3._0_Project
                                 fHP = fHP - damage;
                             }
                             MoveText(oFighter.name, oMove.name);
-                            Raylib.PlaySound(oMove.sfx);
+                            if (damage > 0)
+                            {
+                                Raylib.PlaySound(oMove.sfx);
+                                if (oMove != oFighter.move3)
+                                {
+                                    fDamaged = true;
+                                }
+                            }
                             battlePage++;
                             break;
-                        case 8:                                       //Opponent tell damage
+                        case 8:                                       //Tell result of opponents move
                             if (oHP == oFighter.fullHP)
                             {
                                 Text("HP FULLY RESTORED!");
@@ -295,6 +324,42 @@ namespace FightingGame3._0_Project
                     }
                 }
 
+                if (fDamaged == true)
+                {
+                    if (fBlinkCooldown <= 0)
+                    {
+                        fHide = !fHide;
+                        fBlinkCooldown = 50;
+                        fTimesBlinked++;
+                    }
+                    if (fHide == true) { fColor = invisible; }
+                    else { fColor = Color.WHITE; }
+                    fBlinkCooldown--;
+                    if (fTimesBlinked == 6)
+                    {
+                        fTimesBlinked = 0;
+                        fDamaged = false;
+                    }
+                }
+                if (oDamaged == true)
+                {
+                    if (oBlinkCooldown <= 0)
+                    {
+                        oHide = !oHide;
+                        oBlinkCooldown = 50;
+                        oTimesBlinked++;
+                    }
+                    if (oHide == true) { oColor = invisible; }
+                    else { oColor = Color.WHITE; }
+                    oBlinkCooldown--;
+                    if (oTimesBlinked == 6)
+                    {
+                        oTimesBlinked = 0;
+                        oDamaged = false;
+                    }
+                }
+
+
                 if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)
                 {
                     battlePage++;
@@ -323,6 +388,7 @@ namespace FightingGame3._0_Project
         {
             Raylib.DrawText(name + " USES " + move + "!", 20, 520, 48, Color.BLACK);
         }
+
         static int Attack(Random generator, int attack, int accuracy)
         {
             int damage = generator.Next(5, 11) * attack / 10;
