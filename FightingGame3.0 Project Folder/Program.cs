@@ -83,7 +83,8 @@ namespace FightingGame3._0_Project
             Sound bonk = Raylib.LoadSound("media/bonk.mp3");
             Sound bong = Raylib.LoadSound("media/bong.mp3");
 
-            Rectangle fSize = new Rectangle(0, 0, 160, 150);
+            Rectangle fSize = new Rectangle(0, 0, 500, 500);
+            Rectangle thumbSize = new Rectangle(0, 0, 160, 150);
             Vector2 fLocation = new Vector2(0, 0);
             Rectangle oSize = new Rectangle(0, 0, -500, 500);
             Vector2 oLocation = new Vector2(500, 0);
@@ -117,18 +118,20 @@ namespace FightingGame3._0_Project
                 new Move("TECH TIP", 100, 90, hit),
                 new Move("STARE", 150, 80, hit),
                 new Move("RTX ON", 100, 100, heal),
-                new Move("DROP", 200, 60, hit)
+                new Move("DROP", 200, 60, hit),
             };
 
-            Fighter[] fighters = new Fighter[4]{
+            Fighter[] fighters = new Fighter[6]{
                 new Fighter("WALTER", 400, walterT, walterThumb, moves[0], moves[1], moves[2], moves[3]),
                 new Fighter("GORILLA", 400, gorillaT, walterThumb, moves[4], moves[5], moves[6], moves[7]),
                 new Fighter("BIG FLOPPA", 400, floppaT, walterThumb, moves[8], moves[9], moves[10], moves[11]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
             };
 
-            fFighter = fighters[2];
-            oFighter = fighters[3];
+            fFighter = fighters[3];
+            oFighter = fighters[1];
 
             fHP = fFighter.fullHP;
             oHP = oFighter.fullHP;
@@ -169,20 +172,20 @@ namespace FightingGame3._0_Project
                     Raylib.ClearBackground(bordergrey1);
                     Raylib.DrawRectangle(10, 10, 980, 780, boxyellow);
                     Raylib.DrawText("SELECT YOUR FIGHTER", 66, 54, 70, Color.BLACK);
-                    Raylib.DrawRectangle(100, 150, 800, 600, bordergrey2);
-                    Raylib.DrawRectangle(106, 156, 788, 588, Color.WHITE);
+                    Raylib.DrawRectangle(97, 147, 806, 606, bordergrey2);
+                    Raylib.DrawRectangle(103, 153, 794, 594, Color.WHITE);
                     for (int i = 0; i < 4; i++)
                     {
                         Raylib.DrawRectangle(257 + 160 * i, 150, 6, 600, bordergrey2);
                     }
                     for (int i = 0; i < 3; i++)
                     {
-                        Raylib.DrawRectangle(100, 304 + 150 * i, 800, 6, bordergrey2);
+                        Raylib.DrawRectangle(100, 297 + 150 * i, 800, 6, bordergrey2);
                     }
                     for (int i = 0; i < fighters.Length; i++)
                     {
                         Vector2 thumbLoc = new Vector2(100 + 160 * i, 150);
-                        Raylib.DrawTextureRec(fighters[i].thumbnail, fSize, thumbLoc, Color.WHITE);
+                        Raylib.DrawTextureRec(fighters[i].thumbnail, thumbSize, thumbLoc, Color.WHITE);
                     }
 
 
