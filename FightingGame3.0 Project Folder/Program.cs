@@ -87,6 +87,9 @@ namespace FightingGame3._0_Project
             int damage = 0;
             int randomMove = 1;
             Random generator = new Random();
+            int baba = Raylib.MeasureText("VS", 52);
+            Console.WriteLine("HEWWWOOOOOOOOO");
+            Console.WriteLine(baba);
 
             Texture2D walterT = Raylib.LoadTexture("media/walter.png");             //Fighter in-battle textures
             Texture2D walterThumb = Raylib.LoadTexture("media/walter-thumb.png");
@@ -151,16 +154,17 @@ namespace FightingGame3._0_Project
                 new Fighter("WALTER", 400, walterT, walterThumb, moves[0], moves[1], moves[2], moves[3]),
                 new Fighter("GORILLA", 400, gorillaT, gorillaThumb, moves[4], moves[5], moves[6], moves[7]),
                 new Fighter("BIG FLOPPA", 400, floppaT, floppaThumb, moves[8], moves[9], moves[10], moves[11]),
+                new Fighter("LINUS", 400, linusT, linusThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("OBAMA", 400, obamaT, obamaThumb, moves[16], moves[17], moves[18], moves[19]),
+
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
-                new Fighter("WALTER", 400, walterT, walterThumb, moves[0], moves[1], moves[2], moves[3]),
-                new Fighter("GORILLA", 400, gorillaT, walterThumb, moves[4], moves[5], moves[6], moves[7]),
-                new Fighter("BIG FLOPPA", 400, floppaT, walterThumb, moves[8], moves[9], moves[10], moves[11]),
+                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
@@ -268,36 +272,44 @@ namespace FightingGame3._0_Project
                     }
                 }
 
-                if (gameState == 3)
+                if (gameState == 3)                     //Announce "[FIGHTER] VS [OPPONENT]"
                 {
                     Raylib.ClearBackground(bordergrey1);
                     Raylib.DrawRectangle(10, 10, 980, 780, boxyellow);
-                    Raylib.DrawText("WALTER BATTLE", 95, 100, 90, Color.BLACK);
 
                     switch (page)
                     {
                         case 0:
-                            Text("BABA");
+                            Raylib.DrawTextureRec(fFighter.image, fSize, fLocation, fColor);
+                            Raylib.DrawText(fFighter.name, (500 - Raylib.MeasureText(fFighter.name, 52)) / 2, 500, 52, Color.BLACK);
+
                             break;
                         case 1:
-                            Text("BABA");
+                            Raylib.DrawTextureRec(fFighter.image, fSize, fLocation, fColor);
+                            Raylib.DrawText(fFighter.name, (500 - Raylib.MeasureText(fFighter.name, 52)) / 2, 500, 52, Color.BLACK);
                             break;
-                        case 2:                                                    //Select move
-                            Text("BOOEY");
+                        case 2:
+                            Raylib.DrawTextureRec(fFighter.image, fSize, fLocation, fColor);
+                            Raylib.DrawText(fFighter.name, (500 - Raylib.MeasureText(fFighter.name, 52)) / 2, 500, 52, Color.BLACK);
+                            Raylib.DrawText("VS", 462, 250, 52, Color.BLACK);
                             break;
-                        case 3:                                                    //Select move
-                            Text("CHUNGUS");
+                        case 3:
+                            Raylib.DrawTextureRec(fFighter.image, fSize, fLocation, fColor);
+                            Raylib.DrawText(fFighter.name, (500 - Raylib.MeasureText(fFighter.name, 52)) / 2, 500, 52, Color.BLACK);
+                            Raylib.DrawText("VS", 462, 250, 52, Color.BLACK);
+                            Raylib.DrawTextureRec(oFighter.image, oSize, oLocation, oColor);
+                            Raylib.DrawText(oFighter.name, 500 + (500 - Raylib.MeasureText(oFighter.name, 52)) / 2, 500, 52, Color.BLACK);
                             break;
-                        case 4:                                                    //Select move
+                        case 4:
                             gameState = 4;
                             page = 1;
                             cooldown = 20;
                             break;
                     }
 
-                    if (cooldown == 0 && gameState == 3)
+                    if (cooldown == 0)
                     {
-                        cooldown = 10;
+                        cooldown = 60;
                         page++;
                     }
                 }
