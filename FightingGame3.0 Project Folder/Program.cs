@@ -48,6 +48,7 @@ namespace FightingGame3._0_Project
         static void Main(string[] args)
         {
             Raylib.InitWindow(1000, 800, "Walter Battle 2021");     //Initialize Raylib
+            Raylib.SetTargetFPS(60);
             Raylib.InitAudioDevice();
 
             int gameState = 1;
@@ -77,8 +78,11 @@ namespace FightingGame3._0_Project
             bool oHide = false;
             int oTimesBlinked = 0;
 
-            int battlePage = 1;
             int cooldown = 0;
+            int cool1 = 20;
+            int cool2 = 10;
+
+            int page = 0;
             int hideBox = 0;
             int damage = 0;
             int randomMove = 1;
@@ -98,7 +102,7 @@ namespace FightingGame3._0_Project
             Sound hit = Raylib.LoadSound("media/hit.mp3");                      //Move sound effects
             Sound heal = Raylib.LoadSound("media/heal.mp3");
             Sound bonk = Raylib.LoadSound("media/bonk.mp3");
-            Sound bong = Raylib.LoadSound("media/bong.mp3");
+            Sound bell = Raylib.LoadSound("media/bong.mp3");
 
             Rectangle fSize = new Rectangle(0, 0, 500, 500);                //Variables relating to the position and "size" of textures
             Rectangle thumbSize = new Rectangle(0, 0, 160, 150);
@@ -118,7 +122,7 @@ namespace FightingGame3._0_Project
 
             Move[] moves = new Move[]{                  //List of moves
                 new Move("BONK", 100, 90, bonk),
-                new Move("HIT PAN", 150, 80, bong),
+                new Move("HIT PAN", 150, 80, bell),
                 new Move("CHEESEBORG", 100, 100, heal),
                 new Move("WAR CRIME", 200, 60, hit),
 
@@ -136,13 +140,18 @@ namespace FightingGame3._0_Project
                 new Move("STARE", 150, 80, hit),
                 new Move("RTX ON", 100, 100, heal),
                 new Move("DROP", 200, 60, hit),
+
+                new Move("OBAMIUM", 100, 90, bell),
+                new Move("LAST NAME", 150, 80, hit),
+                new Move("OBAMACARE", 100, 100, heal),
+                new Move("N-WORD", 200, 60, hit)
             };
 
             Fighter[] fighters = new Fighter[20]{        //List of fighters
                 new Fighter("WALTER", 400, walterT, walterThumb, moves[0], moves[1], moves[2], moves[3]),
                 new Fighter("GORILLA", 400, gorillaT, gorillaThumb, moves[4], moves[5], moves[6], moves[7]),
                 new Fighter("BIG FLOPPA", 400, floppaT, floppaThumb, moves[8], moves[9], moves[10], moves[11]),
-                new Fighter("OBAMA", 400, obamaT, obamaThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("OBAMA", 400, obamaT, obamaThumb, moves[16], moves[17], moves[18], moves[19]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
@@ -197,7 +206,7 @@ namespace FightingGame3._0_Project
                     if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)
                     {
                         gameState = 2;
-                        cooldown = 200;
+                        cooldown = 20;
                     }
                 }
                 if (gameState == 2)             //Fighter select
@@ -217,10 +226,10 @@ namespace FightingGame3._0_Project
 
                     if (cooldown <= 0)        //Change selected cell based on input
                     {
-                        if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT) && selectPos.X < 4) { selectPos.X++; cooldown = 150; }
-                        if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN) && selectPos.Y < 3) { selectPos.Y++; cooldown = 150; }
-                        if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT) && selectPos.X > 0) { selectPos.X--; cooldown = 150; }
-                        if (Raylib.IsKeyDown(KeyboardKey.KEY_UP) && selectPos.Y > 0) { selectPos.Y--; cooldown = 150; }
+                        if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT) && selectPos.X < 4) { selectPos.X++; cooldown = cool2; }
+                        if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN) && selectPos.Y < 3) { selectPos.Y++; cooldown = cool2; }
+                        if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT) && selectPos.X > 0) { selectPos.X--; cooldown = cool2; }
+                        if (Raylib.IsKeyDown(KeyboardKey.KEY_UP) && selectPos.Y > 0) { selectPos.Y--; cooldown = cool2; }
                     }
                     Raylib.DrawRectangle(103 + 160 * (int)selectPos.X, 153 + 150 * (int)selectPos.Y, 154, 144, selectcolor);
 
@@ -231,8 +240,9 @@ namespace FightingGame3._0_Project
                             if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)
                             {
                                 fFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
-                                cooldown = 200;
+                                cooldown = cool1;
                                 lockedSelect = selectPos;
+                                selectPos = new Vector2(0, 0);
                                 selectcolor = selectcolor2;
                                 hasSelected = true;
                             }
@@ -243,7 +253,7 @@ namespace FightingGame3._0_Project
                             if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0 && selectPos != lockedSelect)
                             {
                                 oFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
-                                cooldown = 200;
+                                cooldown = cool1;
                                 gameState = 3;
                             }
                             break;
@@ -258,7 +268,42 @@ namespace FightingGame3._0_Project
                     }
                 }
 
-                if (gameState == 3)         //Battle
+                if (gameState == 3)
+                {
+                    Raylib.ClearBackground(bordergrey1);
+                    Raylib.DrawRectangle(10, 10, 980, 780, boxyellow);
+                    Raylib.DrawText("WALTER BATTLE", 95, 100, 90, Color.BLACK);
+
+                    switch (page)
+                    {
+                        case 0:
+                            Text("BABA");
+                            break;
+                        case 1:
+                            Text("BABA");
+                            break;
+                        case 2:                                                    //Select move
+                            Text("BOOEY");
+                            break;
+                        case 3:                                                    //Select move
+                            Text("CHUNGUS");
+                            break;
+                        case 4:                                                    //Select move
+                            gameState = 4;
+                            page = 1;
+                            cooldown = 20;
+                            break;
+                    }
+
+                    if (cooldown == 0 && gameState == 3)
+                    {
+                        cooldown = 10;
+                        page++;
+                    }
+                }
+
+
+                if (gameState == 4)         //Battle
                 {
                     Raylib.ClearBackground(bordergrey1);                    //Background
                     Raylib.DrawRectangle(10, 10, 980, 480, boxyellow);
@@ -276,7 +321,7 @@ namespace FightingGame3._0_Project
 
                     if (fighting == true)
                     {
-                        switch (battlePage)
+                        switch (page)
                         {
                             case 1:
                                 Text("WHAT WILL " + fFighter.name + " DO?");
@@ -334,7 +379,7 @@ namespace FightingGame3._0_Project
                                         oDamaged = true;
                                     }
                                 }
-                                battlePage++;
+                                page++;
                                 break;
                             case 5:                                      //Tell result
                                 if (fMove == fFighter.move3 && fHP == fFighter.fullHP)
@@ -402,7 +447,7 @@ namespace FightingGame3._0_Project
                                         fDamaged = true;
                                     }
                                 }
-                                battlePage++;
+                                page++;
                                 break;
                             case 8:                                       //Tell result of opponents move
                                 if (oHP == oFighter.fullHP)
@@ -429,7 +474,7 @@ namespace FightingGame3._0_Project
                                     won = false;
                                     break;
                                 }
-                                battlePage = 1;
+                                page = 1;
                                 break;
                         }
                     }
@@ -446,12 +491,12 @@ namespace FightingGame3._0_Project
                         }
                     }
 
-                    if (fDamaged == true)               //Handle blinking of player's fighter
+                    if (fDamaged == true)               //Handles blinking of player's fighter
                     {
                         if (fBlinkCooldown <= 0)
                         {
                             fHide = !fHide;
-                            fBlinkCooldown = 50;
+                            fBlinkCooldown = 3;
                             fTimesBlinked++;
                         }
                         if (fHide == true) { fColor = invisible; }
@@ -463,12 +508,12 @@ namespace FightingGame3._0_Project
                             fDamaged = false;
                         }
                     }
-                    if (oDamaged == true)               //Handle blinking of opponent
+                    if (oDamaged == true)               //Handles blinking of opponent
                     {
                         if (oBlinkCooldown <= 0)
                         {
                             oHide = !oHide;
-                            oBlinkCooldown = 50;
+                            oBlinkCooldown = 3;
                             oTimesBlinked++;
                         }
                         if (oHide == true) { oColor = invisible; }
@@ -483,13 +528,13 @@ namespace FightingGame3._0_Project
 
                     if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)   //When enter is pressed:
                     {                                                               //Go to next page
-                        battlePage++;                                               //Make sure it doesn't instantly happen again
-                        cooldown = 200;                                             //Create illusion of text being written out character by character
+                        page++;                                               //Make sure it doesn't instantly happen again
+                        cooldown = cool1;                                             //Create illusion of text being written out character by character
                         hideBox = 980;
                     }
                     if (hideBox > 0)
                     {
-                        hideBox = hideBox - 4;
+                        hideBox = hideBox - 45;
                     }
                     Raylib.DrawRectangle(10 + 980 - hideBox, 510, hideBox, 280, boxgreen);
                 }
