@@ -87,9 +87,6 @@ namespace FightingGame3._0_Project
             int damage = 0;
             int randomMove = 1;
             Random generator = new Random();
-            int baba = Raylib.MeasureText("VS", 52);
-            Console.WriteLine("HEWWWOOOOOOOOO");
-            Console.WriteLine(baba);
 
             Texture2D walterT = Raylib.LoadTexture("media/walter.png");             //Fighter in-battle textures
             Texture2D walterThumb = Raylib.LoadTexture("media/walter-thumb.png");
@@ -106,6 +103,7 @@ namespace FightingGame3._0_Project
             Sound heal = Raylib.LoadSound("media/heal.mp3");
             Sound bonk = Raylib.LoadSound("media/bonk.mp3");
             Sound bell = Raylib.LoadSound("media/bong.mp3");
+            Sound boom = Raylib.LoadSound("media/boom.ogg");
 
             Rectangle fSize = new Rectangle(0, 0, 500, 500);                //Variables relating to the position and "size" of textures
             Rectangle thumbSize = new Rectangle(0, 0, 160, 150);
@@ -240,7 +238,7 @@ namespace FightingGame3._0_Project
                     switch (hasSelected)
                     {
                         case false:
-                            Raylib.DrawText("SELECT YOUR FIGHTER", 66, 54, 70, Color.BLACK);
+                            CenteredText("SELECT YOUR FIGHTER", 1000, 70, 54, 0);
                             if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)
                             {
                                 fFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
@@ -252,7 +250,7 @@ namespace FightingGame3._0_Project
                             }
                             break;
                         case true:
-                            Raylib.DrawText("SELECT YOUR OPPONENT", 66, 54, 70, Color.BLACK);
+                            CenteredText("SELECT YOUR OPPONENT", 1000, 70, 54, 0);
                             Raylib.DrawRectangle(103 + 160 * (int)lockedSelect.X, 153 + 150 * (int)lockedSelect.Y, 154, 144, boxgreen);
                             if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0 && selectPos != lockedSelect)
                             {
@@ -281,36 +279,46 @@ namespace FightingGame3._0_Project
                     {
                         case 0:
                             Raylib.DrawTextureRec(fFighter.image, fSize, fLocation, fColor);
-                            Raylib.DrawText(fFighter.name, (500 - Raylib.MeasureText(fFighter.name, 52)) / 2, 500, 52, Color.BLACK);
-
+                            CenteredText(fFighter.name, 500, 52, 500, 0);
+                            Raylib.PlaySound(boom);
+                            cooldown = 0;
                             break;
                         case 1:
                             Raylib.DrawTextureRec(fFighter.image, fSize, fLocation, fColor);
-                            Raylib.DrawText(fFighter.name, (500 - Raylib.MeasureText(fFighter.name, 52)) / 2, 500, 52, Color.BLACK);
+                            CenteredText(fFighter.name, 500, 52, 500, 0);
                             break;
                         case 2:
                             Raylib.DrawTextureRec(fFighter.image, fSize, fLocation, fColor);
-                            Raylib.DrawText(fFighter.name, (500 - Raylib.MeasureText(fFighter.name, 52)) / 2, 500, 52, Color.BLACK);
-                            Raylib.DrawText("VS", 462, 250, 52, Color.BLACK);
+                            CenteredText(fFighter.name, 500, 52, 500, 0);
+                            CenteredText("VS", 1000, 52, 250, 0);
                             break;
                         case 3:
                             Raylib.DrawTextureRec(fFighter.image, fSize, fLocation, fColor);
-                            Raylib.DrawText(fFighter.name, (500 - Raylib.MeasureText(fFighter.name, 52)) / 2, 500, 52, Color.BLACK);
-                            Raylib.DrawText("VS", 462, 250, 52, Color.BLACK);
+                            CenteredText(fFighter.name, 500, 52, 500, 0);
+                            CenteredText("VS", 1000, 52, 250, 0);
                             Raylib.DrawTextureRec(oFighter.image, oSize, oLocation, oColor);
-                            Raylib.DrawText(oFighter.name, 500 + (500 - Raylib.MeasureText(oFighter.name, 52)) / 2, 500, 52, Color.BLACK);
+                            CenteredText(oFighter.name, 500, 52, 500, 500);
                             break;
                         case 4:
                             gameState = 4;
                             page = 1;
                             cooldown = 20;
+                            hideBox = 980;
                             break;
                     }
 
                     if (cooldown == 0)
                     {
-                        cooldown = 60;
                         page++;
+                        if (page != 4)
+                        {
+                            Raylib.PlaySound(boom);
+                            cooldown = 60;
+                            if (page == 3)
+                            {
+                                cooldown = 180;
+                            }
+                        }
                     }
                 }
 
@@ -343,10 +351,10 @@ namespace FightingGame3._0_Project
                                 Raylib.DrawRectangle(10, 645, 980, 10, bordergrey2);
                                 Raylib.DrawRectangle(495, 510, 10, 280, bordergrey2);
                                 select = Select(select, boxyellow);
-                                Raylib.DrawText(fFighter.move1.name, 20, 550, 48, Color.BLACK);
-                                Raylib.DrawText(fFighter.move2.name, 520, 550, 48, Color.BLACK);
-                                Raylib.DrawText(fFighter.move3.name, 20, 700, 48, Color.BLACK);
-                                Raylib.DrawText(fFighter.move4.name, 520, 700, 48, Color.BLACK);
+                                CenteredText(fFighter.move1.name, 500, 48, 550, 0);
+                                CenteredText(fFighter.move2.name, 500, 48, 550, 500);
+                                CenteredText(fFighter.move3.name, 500, 48, 700, 0);
+                                CenteredText(fFighter.move4.name, 500, 48, 700, 500);
                                 break;
                             case 3:                                      //Tell what move is being used
                                 if (select.X == 10 && select.Y == 510)
@@ -462,7 +470,7 @@ namespace FightingGame3._0_Project
                                 page++;
                                 break;
                             case 8:                                       //Tell result of opponents move
-                                if (oHP == oFighter.fullHP)
+                                if (oMove == oFighter.move3 && oHP == oFighter.fullHP)
                                 {
                                     Text("HP FULLY RESTORED!");
                                 }
@@ -598,6 +606,11 @@ namespace FightingGame3._0_Project
             }
             Raylib.DrawRectangle((int)pos.X, (int)pos.Y, 485, 135, col);
             return pos;
+        }
+
+        static void CenteredText(string text, int fullWidth, int fontSize, int yPos, int xStart)
+        {
+            Raylib.DrawText(text, xStart + (fullWidth - Raylib.MeasureText(text, fontSize)) / 2, yPos, fontSize, Color.BLACK);
         }
     }
 }
