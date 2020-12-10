@@ -61,6 +61,8 @@ namespace FightingGame3._0_Project
                 fighterGrid[x, 3] = x + 15;
             }
             Vector2 selectPos = new Vector2(0, 0);
+            Vector2 lockedSelect = new Vector2(0, 0);
+            bool hasSelected = false;
 
             bool fighting = true;
             bool won = true;
@@ -85,8 +87,13 @@ namespace FightingGame3._0_Project
             Texture2D walterT = Raylib.LoadTexture("media/walter.png");             //Fighter in-battle textures
             Texture2D walterThumb = Raylib.LoadTexture("media/walter-thumb.png");
             Texture2D gorillaT = Raylib.LoadTexture("media/gorilla.png");
+            Texture2D gorillaThumb = Raylib.LoadTexture("media/gorilla-thumb.png");
             Texture2D floppaT = Raylib.LoadTexture("media/floppa.png");
+            Texture2D floppaThumb = Raylib.LoadTexture("media/floppa-thumb.png");
             Texture2D linusT = Raylib.LoadTexture("media/linus.png");
+            Texture2D linusThumb = Raylib.LoadTexture("media/linus-thumb.png");
+            Texture2D obamaT = Raylib.LoadTexture("media/obama.png");
+            Texture2D obamaThumb = Raylib.LoadTexture("media/obama-thumb.png");
 
             Sound hit = Raylib.LoadSound("media/hit.mp3");                      //Move sound effects
             Sound heal = Raylib.LoadSound("media/heal.mp3");
@@ -133,9 +140,9 @@ namespace FightingGame3._0_Project
 
             Fighter[] fighters = new Fighter[20]{        //List of fighters
                 new Fighter("WALTER", 400, walterT, walterThumb, moves[0], moves[1], moves[2], moves[3]),
-                new Fighter("GORILLA", 400, gorillaT, walterThumb, moves[4], moves[5], moves[6], moves[7]),
-                new Fighter("BIG FLOPPA", 400, floppaT, walterThumb, moves[8], moves[9], moves[10], moves[11]),
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("GORILLA", 400, gorillaT, gorillaThumb, moves[4], moves[5], moves[6], moves[7]),
+                new Fighter("BIG FLOPPA", 400, floppaT, floppaThumb, moves[8], moves[9], moves[10], moves[11]),
+                new Fighter("OBAMA", 400, obamaT, obamaThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
@@ -167,6 +174,8 @@ namespace FightingGame3._0_Project
             Color healthgreen = new Color(123, 255, 36, 255);
             Color healthred = new Color(255, 94, 94, 255);
             Color invisible = new Color(255, 255, 255, 60);
+            Color selectcolor = boxgreen;
+            Color selectcolor2 = new Color(255, 156, 159, 255);
 
 
             while (!Raylib.WindowShouldClose())         //The main loop that runs each frame
@@ -195,10 +204,9 @@ namespace FightingGame3._0_Project
                 {
                     Raylib.ClearBackground(bordergrey1);
                     Raylib.DrawRectangle(10, 10, 980, 780, boxyellow);
-                    Raylib.DrawText("SELECT YOUR FIGHTER", 66, 54, 70, Color.BLACK);
                     Raylib.DrawRectangle(97, 147, 806, 606, bordergrey2);
                     Raylib.DrawRectangle(103, 153, 794, 594, Color.WHITE);
-                    for (int i = 0; i < 4; i++)
+                    for (int i = 0; i < 4; i++)                                         //Draw grid
                     {
                         Raylib.DrawRectangle(257 + 160 * i, 150, 6, 600, bordergrey2);
                     }
@@ -207,30 +215,46 @@ namespace FightingGame3._0_Project
                         Raylib.DrawRectangle(100, 297 + 150 * i, 800, 6, bordergrey2);
                     }
 
-                    if (cooldown <= 0)
+                    if (cooldown <= 0)        //Change selected cell based on input
                     {
                         if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT) && selectPos.X < 4) { selectPos.X++; cooldown = 150; }
                         if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN) && selectPos.Y < 3) { selectPos.Y++; cooldown = 150; }
                         if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT) && selectPos.X > 0) { selectPos.X--; cooldown = 150; }
                         if (Raylib.IsKeyDown(KeyboardKey.KEY_UP) && selectPos.Y > 0) { selectPos.Y--; cooldown = 150; }
                     }
-                    fFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
-                    Raylib.DrawRectangle(103 + 160 * (int)selectPos.X, 153 + 150 * (int)selectPos.Y, 154, 144, boxgreen);
+                    Raylib.DrawRectangle(103 + 160 * (int)selectPos.X, 153 + 150 * (int)selectPos.Y, 154, 144, selectcolor);
 
-                    for (int x = 0; x < 5; x++)
+                    switch (hasSelected)
+                    {
+                        case false:
+                            Raylib.DrawText("SELECT YOUR FIGHTER", 66, 54, 70, Color.BLACK);
+                            if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)
+                            {
+                                fFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
+                                cooldown = 200;
+                                lockedSelect = selectPos;
+                                selectcolor = selectcolor2;
+                                hasSelected = true;
+                            }
+                            break;
+                        case true:
+                            Raylib.DrawText("SELECT YOUR OPPONENT", 66, 54, 70, Color.BLACK);
+                            Raylib.DrawRectangle(103 + 160 * (int)lockedSelect.X, 153 + 150 * (int)lockedSelect.Y, 154, 144, boxgreen);
+                            if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0 && selectPos != lockedSelect)
+                            {
+                                oFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
+                                cooldown = 200;
+                                gameState = 3;
+                            }
+                            break;
+                    }
+
+                    for (int x = 0; x < 5; x++)         //Draw fighter thumbnails
                     {
                         Raylib.DrawTextureRec(fighters[x].thumbnail, thumbSize, new Vector2(100 + 160 * x, 150), Color.WHITE);
                         Raylib.DrawTextureRec(fighters[x + 5].thumbnail, thumbSize, new Vector2(100 + 160 * x, 300), Color.WHITE);
                         Raylib.DrawTextureRec(fighters[x + 10].thumbnail, thumbSize, new Vector2(100 + 160 * x, 450), Color.WHITE);
                         Raylib.DrawTextureRec(fighters[x + 15].thumbnail, thumbSize, new Vector2(100 + 160 * x, 600), Color.WHITE);
-                    }
-
-
-
-                    if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)
-                    {
-                        gameState = 3;
-                        cooldown = 200;
                     }
                 }
 
