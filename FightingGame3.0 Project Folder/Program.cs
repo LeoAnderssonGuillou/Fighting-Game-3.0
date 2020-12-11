@@ -99,10 +99,10 @@ namespace FightingGame3._0_Project
             Texture2D obamaT = Raylib.LoadTexture("media/obama.png");
             Texture2D obamaThumb = Raylib.LoadTexture("media/obama-thumb.png");
 
-            Sound hit = Raylib.LoadSound("media/hit.mp3");                      //Move sound effects
-            Sound heal = Raylib.LoadSound("media/heal.mp3");
-            Sound bonk = Raylib.LoadSound("media/bonk.mp3");
-            Sound bell = Raylib.LoadSound("media/bong.mp3");
+            Sound hit = Raylib.LoadSound("media/hit.ogg");                      //Move sound effects
+            Sound heal = Raylib.LoadSound("media/heal.ogg");
+            Sound bonk = Raylib.LoadSound("media/bonk.ogg");
+            Sound bell = Raylib.LoadSound("media/bell.ogg");
             Sound boom = Raylib.LoadSound("media/boom.ogg");
 
             Rectangle fSize = new Rectangle(0, 0, 500, 500);                //Variables relating to the position and "size" of textures
