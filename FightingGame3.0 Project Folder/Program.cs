@@ -68,22 +68,24 @@ namespace FightingGame3._0_Project
             bool fighting = true;
             bool won = true;
 
-            bool fDamaged = false;
+            bool fDamaged = false;      //Keeps track of if a fighter is damaged or dead
             int fBlinkCooldown = 0;
             bool fHide = false;
             int fTimesBlinked = 0;
             int fDying = 0;
+            int oDying = 0;
 
-            bool oDamaged = false;      //Handles damage blinking animation
+            bool oDamaged = false;      //Handles damage and death animation
             int oBlinkCooldown = 0;
             bool oHide = false;
             int oTimesBlinked = 0;
 
-            int cooldown = 0;
-            int cool1 = 20;
-            int cool2 = 10;
+            int cooldown = 0;           //The cooldown int is used throughout to make sure a key press only causes 1 input
+            int coolNormal = 20;
+            int coolShort = 10;
+            int coolLong = 60;
 
-            int page = 0;
+            int page = 0;               //Miscellaneous variables
             int hideBox = 0;
             int damage = 0;
             int randomMove = 1;
@@ -106,7 +108,7 @@ namespace FightingGame3._0_Project
             Sound bell = Raylib.LoadSound("media/bell.ogg");
             Sound boom = Raylib.LoadSound("media/boom.ogg");
 
-            Rectangle fSize = new Rectangle(0, 0, 500, 500);                //Variables relating to the position and "size" of textures
+            Rectangle fSize = new Rectangle(0, 0, 500, 500);                //Rectangles used for drawing textures
             Rectangle thumbSize = new Rectangle(0, 0, 160, 150);
             Vector2 fLocation = new Vector2(0, 0);
             Rectangle oSize = new Rectangle(0, 0, -500, 500);
@@ -133,7 +135,7 @@ namespace FightingGame3._0_Project
                 new Move("REJECT HUMANITY", 100, 100, heal),
                 new Move("CHIMP EVENT", 200, 60, hit),
 
-                new Move("HISS", 100, 90, hit),
+                new Move("HISS", 500, 90, hit),
                 new Move("ROAST", 150, 80, hit),
                 new Move("MELON", 100, 100, heal),
                 new Move("MEGA CHONK", 200, 60, hit),
@@ -200,10 +202,19 @@ namespace FightingGame3._0_Project
                     Raylib.DrawRectangle(310, 580, 380, 100, boxgreen);
                     CenteredText("BATLLE", 400, 54, 603, 300);
 
+                    page = 0;
+                    selectPos = new Vector2(0, 0);      //Some variables need to be reset every game cycle
+                    lockedSelect = new Vector2(0, 0);
+                    hasSelected = false;
+                    fighting = true;
+                    fColor = Color.WHITE;
+                    oColor = Color.WHITE;
+                    selectcolor = boxgreen;
+
                     if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)
                     {
                         gameState = 2;
-                        cooldown = cool2;
+                        cooldown = coolShort;
                     }
                 }
                 if (gameState == 2)             //Fighter select
@@ -223,10 +234,10 @@ namespace FightingGame3._0_Project
 
                     if (cooldown <= 0)        //Change selected cell based on input
                     {
-                        if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT) && selectPos.X < 4) { selectPos.X++; cooldown = cool2; }
-                        if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN) && selectPos.Y < 3) { selectPos.Y++; cooldown = cool2; }
-                        if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT) && selectPos.X > 0) { selectPos.X--; cooldown = cool2; }
-                        if (Raylib.IsKeyDown(KeyboardKey.KEY_UP) && selectPos.Y > 0) { selectPos.Y--; cooldown = cool2; }
+                        if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT) && selectPos.X < 4) { selectPos.X++; cooldown = coolShort; }
+                        if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN) && selectPos.Y < 3) { selectPos.Y++; cooldown = coolShort; }
+                        if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT) && selectPos.X > 0) { selectPos.X--; cooldown = coolShort; }
+                        if (Raylib.IsKeyDown(KeyboardKey.KEY_UP) && selectPos.Y > 0) { selectPos.Y--; cooldown = coolShort; }
                     }
                     Raylib.DrawRectangle(103 + 160 * (int)selectPos.X, 153 + 150 * (int)selectPos.Y, 154, 144, selectcolor);
 
@@ -238,7 +249,7 @@ namespace FightingGame3._0_Project
                             {
                                 fFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
                                 fHP = fFighter.fullHP;
-                                cooldown = cool1;
+                                cooldown = coolNormal;
                                 lockedSelect = selectPos;
                                 selectPos = new Vector2(0, 0);
                                 selectcolor = selectcolor2;
@@ -252,7 +263,7 @@ namespace FightingGame3._0_Project
                             {
                                 oFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
                                 oHP = oFighter.fullHP;
-                                cooldown = cool1;
+                                cooldown = coolNormal;
                                 gameState = 3;
                             }
                             break;
@@ -421,6 +432,9 @@ namespace FightingGame3._0_Project
                                 {
                                     fighting = false;
                                     won = true;
+                                    oDying = 249;
+                                    cooldown = coolLong;
+                                    page = 1;
                                     break;
                                 }
                                 if (randomMove == 1 | randomMove == 2)
@@ -490,6 +504,7 @@ namespace FightingGame3._0_Project
                                     fighting = false;
                                     won = false;
                                     fDying = 249;
+                                    cooldown = coolLong;
                                     break;
                                 }
                                 page = 1;
@@ -507,12 +522,21 @@ namespace FightingGame3._0_Project
                                 Text(oFighter.name + " WINS!");
                                 break;
                         }
+                        if (page > 1)
+                        {
+                            gameState = 1;
+                        }
                     }
 
                     if (fDying > 0)
                     {
                         fColor = new Color(255, 255, 255, fDying);
                         fDying -= 6;
+                    }
+                    if (oDying > 0)
+                    {
+                        oColor = new Color(255, 255, 255, oDying);
+                        oDying -= 6;
                     }
 
                     if (fDamaged == true)               //Handles blinking of player's fighter
@@ -553,7 +577,7 @@ namespace FightingGame3._0_Project
                     if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)   //When enter is pressed:
                     {                                                               //-Go to next page
                         page++;                                                     //-Make sure it doesn't instantly happen again
-                        cooldown = cool1;                                           //-Create illusion of text being written out character by character
+                        cooldown = coolNormal;                                           //-Create illusion of text being written out character by character
                         hideBox = 980;
                     }
                     if (hideBox > 0)
