@@ -72,6 +72,7 @@ namespace FightingGame3._0_Project
             int fBlinkCooldown = 0;
             bool fHide = false;
             int fTimesBlinked = 0;
+            int fDying = 0;
 
             bool oDamaged = false;      //Handles damage blinking animation
             int oBlinkCooldown = 0;
@@ -127,10 +128,10 @@ namespace FightingGame3._0_Project
                 new Move("CHEESEBORG", 100, 100, heal),
                 new Move("WAR CRIME", 200, 60, hit),
 
-                new Move("MONKE FLIP", 60, 90, hit),
-                new Move("SPINNING GORILLA", 100, 80, hit),
-                new Move("REJECT HUMANITY", 50, 100, heal),
-                new Move("CHIMP EVENT", 150, 60, hit),
+                new Move("MONKE FLIP", 100, 90, hit),
+                new Move("SPINNING GORILLA", 150, 80, hit),
+                new Move("REJECT HUMANITY", 100, 100, heal),
+                new Move("CHIMP EVENT", 200, 60, hit),
 
                 new Move("HISS", 100, 90, hit),
                 new Move("ROAST", 150, 80, hit),
@@ -151,7 +152,7 @@ namespace FightingGame3._0_Project
             Fighter[] fighters = new Fighter[20]{        //List of fighters
                 new Fighter("WALTER", 400, walterT, walterThumb, moves[0], moves[1], moves[2], moves[3]),
                 new Fighter("GORILLA", 400, gorillaT, gorillaThumb, moves[4], moves[5], moves[6], moves[7]),
-                new Fighter("BIG FLOPPA", 400, floppaT, floppaThumb, moves[8], moves[9], moves[10], moves[11]),
+                new Fighter("BIG FLOPPA", 800, floppaT, floppaThumb, moves[8], moves[9], moves[10], moves[11]),
                 new Fighter("LINUS", 400, linusT, linusThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("OBAMA", 400, obamaT, obamaThumb, moves[16], moves[17], moves[18], moves[19]),
 
@@ -172,12 +173,6 @@ namespace FightingGame3._0_Project
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
             };
 
-            fFighter = fighters[3];
-            oFighter = fighters[1];
-
-            fHP = fFighter.fullHP;
-            oHP = oFighter.fullHP;
-
             Color bordergrey1 = new Color(214, 214, 214, 255);      //Colors
             Color bordergrey2 = new Color(150, 150, 150, 255);
             Color boxyellow = new Color(255, 255, 156, 255);
@@ -196,19 +191,19 @@ namespace FightingGame3._0_Project
                 {
                     Raylib.ClearBackground(bordergrey1);
                     Raylib.DrawRectangle(10, 10, 980, 780, boxyellow);
-                    Raylib.DrawText("WALTER BATTLE", 95, 100, 90, Color.BLACK);
-                    Raylib.DrawText("2021", 415, 200, 90, Color.BLACK);
+                    CenteredText("WALTER BATTLE", 1000, 90, 95, 0);
+                    CenteredText("2021", 1000, 90, 200, 0);
                     Raylib.DrawRectangle(300, 380, 400, 120, bordergrey1);
                     Raylib.DrawRectangle(310, 390, 380, 100, boxgreen);
-                    Raylib.DrawText("CAMPAIGN", 355, 413, 54, Color.BLACK);
+                    CenteredText("CAMPAIGN", 400, 54, 413, 300);
                     Raylib.DrawRectangle(300, 570, 400, 120, bordergrey1);
                     Raylib.DrawRectangle(310, 580, 380, 100, boxgreen);
-                    Raylib.DrawText("BATLLE", 386, 603, 54, Color.BLACK);
+                    CenteredText("BATLLE", 400, 54, 603, 300);
 
                     if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)
                     {
                         gameState = 2;
-                        cooldown = 20;
+                        cooldown = cool2;
                     }
                 }
                 if (gameState == 2)             //Fighter select
@@ -242,6 +237,7 @@ namespace FightingGame3._0_Project
                             if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)
                             {
                                 fFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
+                                fHP = fFighter.fullHP;
                                 cooldown = cool1;
                                 lockedSelect = selectPos;
                                 selectPos = new Vector2(0, 0);
@@ -255,6 +251,7 @@ namespace FightingGame3._0_Project
                             if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0 && selectPos != lockedSelect)
                             {
                                 oFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
+                                oHP = oFighter.fullHP;
                                 cooldown = cool1;
                                 gameState = 3;
                             }
@@ -390,7 +387,7 @@ namespace FightingGame3._0_Project
                                     oHP = oHP - damage;
                                 }
                                 MoveText(fFighter.name, fMove.name);
-                                randomMove = generator.Next(1, 5);
+                                randomMove = generator.Next(1, 8);
                                 if (damage > 0)
                                 {
                                     Raylib.PlaySound(fMove.sfx);
@@ -426,21 +423,21 @@ namespace FightingGame3._0_Project
                                     won = true;
                                     break;
                                 }
-                                if (randomMove == 1)
+                                if (randomMove == 1 | randomMove == 2)
                                 {
                                     oMove = oFighter.move1;
                                 }
-                                else if (randomMove == 2)
+                                else if (randomMove == 3 | randomMove == 4)
                                 {
                                     oMove = oFighter.move2;
                                 }
-                                else if (randomMove == 3)
+                                else if (randomMove == 5 | randomMove == 6)
                                 {
-                                    oMove = oFighter.move3;
+                                    oMove = oFighter.move4;
                                 }
                                 else
                                 {
-                                    oMove = oFighter.move4;
+                                    oMove = oFighter.move3;
                                 }
                                 MoveText(oFighter.name, oMove.name);
                                 break;
@@ -492,6 +489,7 @@ namespace FightingGame3._0_Project
                                 {
                                     fighting = false;
                                     won = false;
+                                    fDying = 249;
                                     break;
                                 }
                                 page = 1;
@@ -509,6 +507,12 @@ namespace FightingGame3._0_Project
                                 Text(oFighter.name + " WINS!");
                                 break;
                         }
+                    }
+
+                    if (fDying > 0)
+                    {
+                        fColor = new Color(255, 255, 255, fDying);
+                        fDying -= 6;
                     }
 
                     if (fDamaged == true)               //Handles blinking of player's fighter
@@ -547,9 +551,9 @@ namespace FightingGame3._0_Project
                     }
 
                     if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)   //When enter is pressed:
-                    {                                                               //Go to next page
-                        page++;                                               //Make sure it doesn't instantly happen again
-                        cooldown = cool1;                                             //Create illusion of text being written out character by character
+                    {                                                               //-Go to next page
+                        page++;                                                     //-Make sure it doesn't instantly happen again
+                        cooldown = cool1;                                           //-Create illusion of text being written out character by character
                         hideBox = 980;
                     }
                     if (hideBox > 0)
