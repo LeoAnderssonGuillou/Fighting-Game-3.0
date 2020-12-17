@@ -44,7 +44,6 @@ namespace FightingGame3._0_Project
             }
         }
 
-
         static void Main(string[] args)
         {
             Raylib.InitWindow(1000, 800, "Walter Battle 2021");     //Initialize Raylib
@@ -90,6 +89,8 @@ namespace FightingGame3._0_Project
             int damage = 0;
             int randomMove = 1;
             Random generator = new Random();
+            Vector2 select = new Vector2(10, 510);
+            int gameMode = 0;
 
             Texture2D walterT = Raylib.LoadTexture("media/walter.png");             //Fighter in-battle textures
             Texture2D walterThumb = Raylib.LoadTexture("media/walter-thumb.png");
@@ -113,7 +114,6 @@ namespace FightingGame3._0_Project
             Vector2 fLocation = new Vector2(0, 0);
             Rectangle oSize = new Rectangle(0, 0, -500, 500);
             Vector2 oLocation = new Vector2(500, 0);
-            Vector2 select = new Vector2(10, 510);
 
             Move fMove = new Move("", 0, 0, bonk);                  //Create default fighter, opponent and moves - These are changed based on selected fighters and uses in the battle switch.
             Move oMove = new Move("", 0, 0, bonk);
@@ -124,7 +124,7 @@ namespace FightingGame3._0_Project
             Color fColor = Color.WHITE;
             Color oColor = Color.WHITE;
 
-            Move[] moves = new Move[]{                  //List of moves
+            Move[] moves = new Move[]{                  //Array of moves
                 new Move("BONK", 100, 90, bonk),
                 new Move("HIT PAN", 150, 80, bell),
                 new Move("CHEESEBORG", 100, 100, heal),
@@ -151,7 +151,7 @@ namespace FightingGame3._0_Project
                 new Move("N-WORD", 200, 60, hit)
             };
 
-            Fighter[] fighters = new Fighter[20]{        //List of fighters
+            Fighter[] fighters = new Fighter[20]{        //Array of fighters
                 new Fighter("WALTER", 400, walterT, walterThumb, moves[0], moves[1], moves[2], moves[3]),
                 new Fighter("GORILLA", 400, gorillaT, gorillaThumb, moves[4], moves[5], moves[6], moves[7]),
                 new Fighter("BIG FLOPPA", 800, floppaT, floppaThumb, moves[8], moves[9], moves[10], moves[11]),
@@ -197,13 +197,35 @@ namespace FightingGame3._0_Project
                     CenteredText("2021", 1000, 90, 200, 0);
                     Raylib.DrawRectangle(300, 380, 400, 120, bordergrey1);
                     Raylib.DrawRectangle(310, 390, 380, 100, boxgreen);
-                    CenteredText("CAMPAIGN", 400, 54, 413, 300);
                     Raylib.DrawRectangle(300, 570, 400, 120, bordergrey1);
                     Raylib.DrawRectangle(310, 580, 380, 100, boxgreen);
+
+                    if (Raylib.IsKeyDown(KeyboardKey.KEY_UP) && cooldown == 0)
+                    {
+                        gameMode = 0;
+                        cooldown = coolShort;
+                    }
+                    else if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN) && cooldown == 0)
+                    {
+                        gameMode = 1;
+                        cooldown = coolShort;
+                    }
+                    switch (gameMode)
+                    {
+                        case 0:
+                            Raylib.DrawRectangle(310, 390, 380, 100, healthgreen);
+                            break;
+                        case 1:
+                            Raylib.DrawRectangle(310, 580, 380, 100, healthgreen);
+                            break;
+                    }
+                    CenteredText("CAMPAIGN", 400, 54, 413, 300);
                     CenteredText("BATLLE", 400, 54, 603, 300);
 
-                    page = 0;
-                    selectPos = new Vector2(0, 0);      //Some variables need to be reset every game cycle
+                    page = 0;           //Some variables need to be reset when sent back to the main menu
+                    fDying = 0;
+                    oDying = 0;
+                    selectPos = new Vector2(0, 0);
                     lockedSelect = new Vector2(0, 0);
                     hasSelected = false;
                     fighting = true;
@@ -214,7 +236,7 @@ namespace FightingGame3._0_Project
                     if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)
                     {
                         gameState = 2;
-                        cooldown = coolShort;
+                        cooldown = coolNormal;
                     }
                 }
                 if (gameState == 2)             //Fighter select
@@ -254,6 +276,10 @@ namespace FightingGame3._0_Project
                                 selectPos = new Vector2(0, 0);
                                 selectcolor = selectcolor2;
                                 hasSelected = true;
+                                if (gameMode == 0)
+                                {
+                                    gameState = 3;
+                                }
                             }
                             break;
                         case true:
@@ -503,8 +529,9 @@ namespace FightingGame3._0_Project
                                 {
                                     fighting = false;
                                     won = false;
-                                    fDying = 249;
+                                    fDying = 247;
                                     cooldown = coolLong;
+                                    page = 1;
                                     break;
                                 }
                                 page = 1;
@@ -531,12 +558,12 @@ namespace FightingGame3._0_Project
                     if (fDying > 0)
                     {
                         fColor = new Color(255, 255, 255, fDying);
-                        fDying -= 6;
+                        fDying -= 8;
                     }
                     if (oDying > 0)
                     {
                         oColor = new Color(255, 255, 255, oDying);
-                        oDying -= 6;
+                        oDying -= 8;
                     }
 
                     if (fDamaged == true)               //Handles blinking of player's fighter
@@ -636,9 +663,21 @@ namespace FightingGame3._0_Project
             return pos;
         }
 
+        //Allows text to easely be drawn centered within a given box (x-axis only)
         static void CenteredText(string text, int fullWidth, int fontSize, int yPos, int xStart)
         {
             Raylib.DrawText(text, xStart + (fullWidth - Raylib.MeasureText(text, fontSize)) / 2, yPos, fontSize, Color.BLACK);
+        }
+
+        //Changes fullHP and attack power of a fighter using a given float (1.25f => 25% power increase)
+        static Fighter ChangePower(Fighter fighter, float power)
+        {
+            fighter.fullHP = (int)(fighter.fullHP * power);
+            fighter.move1.atk = (int)(fighter.move1.atk * power);
+            fighter.move2.atk = (int)(fighter.move2.atk * power);
+            fighter.move3.atk = (int)(fighter.move3.atk * power);
+            fighter.move4.atk = (int)(fighter.move4.atk * power);
+            return fighter;
         }
     }
 }
