@@ -92,7 +92,7 @@ namespace FightingGame3._0_Project
             Vector2 select = new Vector2(10, 510);
             int gameMode = 0;
 
-            Texture2D walterT = Raylib.LoadTexture("media/walter.png");             //Fighter in-battle textures
+            Texture2D walterT = Raylib.LoadTexture("media/walter.png");             //Fighter textures
             Texture2D walterThumb = Raylib.LoadTexture("media/walter-thumb.png");
             Texture2D gorillaT = Raylib.LoadTexture("media/gorilla.png");
             Texture2D gorillaThumb = Raylib.LoadTexture("media/gorilla-thumb.png");
@@ -102,12 +102,18 @@ namespace FightingGame3._0_Project
             Texture2D linusThumb = Raylib.LoadTexture("media/linus-thumb.png");
             Texture2D obamaT = Raylib.LoadTexture("media/obama.png");
             Texture2D obamaThumb = Raylib.LoadTexture("media/obama-thumb.png");
+            Texture2D juanT = Raylib.LoadTexture("media/juan.png");
+            Texture2D juanThumb = Raylib.LoadTexture("media/juan-thumb.png");
 
             Sound hit = Raylib.LoadSound("media/hit.ogg");                      //Move sound effects
             Sound heal = Raylib.LoadSound("media/heal.ogg");
             Sound bonk = Raylib.LoadSound("media/bonk.ogg");
             Sound bell = Raylib.LoadSound("media/bell.ogg");
             Sound boom = Raylib.LoadSound("media/boom.ogg");
+            Sound chimpevent = Raylib.LoadSound("media/chimpevent.ogg");
+            Sound reject = Raylib.LoadSound("media/reject.ogg");
+            Sound roast = Raylib.LoadSound("media/roast.ogg");
+            Sound getdown = Raylib.LoadSound("media/getdown.ogg");
 
             Rectangle fSize = new Rectangle(0, 0, 500, 500);                //Rectangles used for drawing textures
             Rectangle thumbSize = new Rectangle(0, 0, 160, 150);
@@ -132,23 +138,28 @@ namespace FightingGame3._0_Project
 
                 new Move("MONKE FLIP", 100, 90, hit),
                 new Move("SPINNING GORILLA", 150, 80, hit),
-                new Move("REJECT HUMANITY", 100, 100, heal),
-                new Move("CHIMP EVENT", 200, 60, hit),
+                new Move("REJECT HUMANITY", 100, 100, reject),
+                new Move("CHIMP EVENT", 200, 60, chimpevent),
 
                 new Move("HISS", 500, 90, hit),
-                new Move("ROAST", 150, 80, hit),
+                new Move("ROAST", 150, 80, roast),
                 new Move("MELON", 100, 100, heal),
                 new Move("MEGA CHONK", 200, 60, hit),
 
                 new Move("TECH TIP", 100, 90, hit),
                 new Move("STARE", 150, 80, hit),
-                new Move("RTX ON", 100, 100, heal),
+                new Move("RTX ON", 100, 100, reject),
                 new Move("DROP", 200, 60, hit),
 
                 new Move("OBAMIUM", 100, 90, bell),
                 new Move("LAST NAME", 150, 80, hit),
                 new Move("OBAMACARE", 100, 100, heal),
-                new Move("N-WORD", 200, 60, hit)
+                new Move("THE WORD", 200, 60, getdown),
+
+                new Move("BACKFLIP CRUSH", 100, 90, hit),
+                new Move("QUAKE DANCE", 150, 80, hit),
+                new Move("'MAN'", 100, 100, heal),
+                new Move("DESTROY UNIVERSE", 200, 60, getdown)
             };
 
             Fighter[] fighters = new Fighter[20]{        //Array of fighters
@@ -157,8 +168,8 @@ namespace FightingGame3._0_Project
                 new Fighter("BIG FLOPPA", 800, floppaT, floppaThumb, moves[8], moves[9], moves[10], moves[11]),
                 new Fighter("LINUS", 400, linusT, linusThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("OBAMA", 400, obamaT, obamaThumb, moves[16], moves[17], moves[18], moves[19]),
+                new Fighter("JUAN", 400, juanT, juanThumb, moves[20], moves[21], moves[22], moves[23]),
 
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
@@ -181,7 +192,8 @@ namespace FightingGame3._0_Project
             Color boxgreen = new Color(187, 255, 156, 255);
             Color healthgreen = new Color(123, 255, 36, 255);
             Color healthred = new Color(255, 94, 94, 255);
-            Color invisible = new Color(255, 255, 255, 60);
+            Color faded = new Color(255, 255, 255, 60);
+            Color transparent = new Color(255, 255, 255, 0);
             Color selectcolor = boxgreen;
             Color selectcolor2 = new Color(255, 156, 159, 255);
 
@@ -261,7 +273,8 @@ namespace FightingGame3._0_Project
                         if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT) && selectPos.X > 0) { selectPos.X--; cooldown = coolShort; }
                         if (Raylib.IsKeyDown(KeyboardKey.KEY_UP) && selectPos.Y > 0) { selectPos.Y--; cooldown = coolShort; }
                     }
-                    Raylib.DrawRectangle(103 + 160 * (int)selectPos.X, 153 + 150 * (int)selectPos.Y, 154, 144, selectcolor);
+                    Raylib.DrawRectangle(97 + 160 * (int)selectPos.X, 147 + 150 * (int)selectPos.Y, 166, 156, selectcolor);
+                    Raylib.DrawRectangle(103 + 160 * (int)selectPos.X, 153 + 150 * (int)selectPos.Y, 154, 144, Color.WHITE);
 
                     switch (hasSelected)
                     {
@@ -284,7 +297,9 @@ namespace FightingGame3._0_Project
                             break;
                         case true:
                             CenteredText("SELECT YOUR OPPONENT", 1000, 70, 54, 0);
-                            Raylib.DrawRectangle(103 + 160 * (int)lockedSelect.X, 153 + 150 * (int)lockedSelect.Y, 154, 144, boxgreen);
+                            //Raylib.DrawRectangle(103 + 160 * (int)lockedSelect.X, 153 + 150 * (int)lockedSelect.Y, 154, 144, boxgreen);
+                            Raylib.DrawRectangle(97 + 160 * (int)lockedSelect.X, 147 + 150 * (int)lockedSelect.Y, 166, 156, boxgreen);
+
                             if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0 && selectPos != lockedSelect)
                             {
                                 oFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
@@ -388,7 +403,16 @@ namespace FightingGame3._0_Project
                                 CenteredText(fFighter.move1.name, 500, 48, 550, 0);
                                 CenteredText(fFighter.move2.name, 500, 48, 550, 500);
                                 CenteredText(fFighter.move3.name, 500, 48, 700, 0);
-                                CenteredText(fFighter.move4.name, 500, 48, 700, 500);
+
+                                if (fFighter.move4.name == "DESTROY UNIVERSE")
+                                {
+                                    CenteredText("DESTROY", 500, 48, 676, 500);
+                                    CenteredText("UNIVERSE", 500, 48, 724, 500);
+                                }
+                                else
+                                {
+                                    CenteredText(fFighter.move4.name, 500, 48, 700, 500);
+                                }
                                 break;
                             case 3:                                      //Tell what move is being used
                                 if (select.X == 10 && select.Y == 510)
@@ -574,7 +598,7 @@ namespace FightingGame3._0_Project
                             fBlinkCooldown = 3;
                             fTimesBlinked++;
                         }
-                        if (fHide == true) { fColor = invisible; }
+                        if (fHide == true) { fColor = faded; }
                         else { fColor = Color.WHITE; }
                         fBlinkCooldown--;
                         if (fTimesBlinked == 6)
@@ -591,7 +615,7 @@ namespace FightingGame3._0_Project
                             oBlinkCooldown = 3;
                             oTimesBlinked++;
                         }
-                        if (oHide == true) { oColor = invisible; }
+                        if (oHide == true) { oColor = faded; }
                         else { oColor = Color.WHITE; }
                         oBlinkCooldown--;
                         if (oTimesBlinked == 6)
