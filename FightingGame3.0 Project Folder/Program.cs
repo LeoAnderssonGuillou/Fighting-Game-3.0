@@ -106,6 +106,14 @@ namespace FightingGame3._0_Project
             Texture2D juanThumb = Raylib.LoadTexture("media/juan-thumb.png");
             Texture2D johnporkT = Raylib.LoadTexture("media/johnpork.png");
             Texture2D johnporkThumb = Raylib.LoadTexture("media/johnpork-thumb.png");
+            Texture2D grievousT = Raylib.LoadTexture("media/grievous.png");
+            Texture2D grievousThumb = Raylib.LoadTexture("media/grievous-thumb.png");
+            Texture2D dolphinT = Raylib.LoadTexture("media/dolphin.png");
+            Texture2D dolphinThumb = Raylib.LoadTexture("media/dolphin-thumb.png");
+            Texture2D israelT = Raylib.LoadTexture("media/israel.png");
+            Texture2D israelThumb = Raylib.LoadTexture("media/israel-thumb.png");
+            Texture2D yodaT = Raylib.LoadTexture("media/yoda.png");
+            Texture2D yodaThumb = Raylib.LoadTexture("media/yoda-thumb.png");
 
             Sound hit = Raylib.LoadSound("media/hit.ogg");                      //Move sound effects
             Sound heal = Raylib.LoadSound("media/heal.ogg");
@@ -166,7 +174,21 @@ namespace FightingGame3._0_Project
                 new Move("BEACH ATTACK", 100, 90, hit),
                 new Move("KINDA SUS NGL", 150, 80, hit),
                 new Move("VIBE", 100, 100, reject),
-                new Move("EXECUTE", 200, 60, getdown)
+                new Move("EXECUTE", 200, 60, roast),
+
+                new Move("COUGH", 100, 90, hit),
+                new Move("GO UP STAIRS", 150, 80, roast),
+                new Move("AUTISM RECHARGE", 100, 100, reject),
+                new Move("6 MILLION", 200, 60, hit),
+
+                new Move("TOP SPEED", 100, 90, hit),
+                new Move("TAKE LOAN", 100, 100, heal),
+                new Move("DOLPHIN MAN", 200, 60, hit),
+
+                new Move("BEACH ATTACK", 100, 90, hit),
+                new Move("KINDA SUS NGL", 150, 80, hit),
+                new Move("VIBE", 100, 100, reject),
+                new Move("EXECUTE", 200, 60, getdown),
             };
 
             Fighter[] fighters = new Fighter[20]{        //Array of fighters
@@ -177,11 +199,11 @@ namespace FightingGame3._0_Project
                 new Fighter("OBAMA", 400, obamaT, obamaThumb, moves[16], moves[17], moves[18], moves[19]),
                 new Fighter("JUAN", 400, juanT, juanThumb, moves[20], moves[21], moves[22], moves[23]),
                 new Fighter("JOHN PORK", 400, johnporkT, johnporkThumb, moves[24], moves[25], moves[26], moves[27]),
+                new Fighter("GRIEVOUS", 400, grievousT, grievousThumb, moves[28], moves[29], moves[30], moves[31]),
+                new Fighter("DOLPHIN", 400, dolphinT, dolphinThumb, moves[32], moves[0], moves[33], moves[34]),
+                new Fighter("ISRAEL", 400, israelT, israelThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("YODA", 400, yodaT, yodaThumb, moves[12], moves[13], moves[14], moves[15]),
 
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
