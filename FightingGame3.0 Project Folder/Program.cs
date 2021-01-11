@@ -104,6 +104,8 @@ namespace FightingGame3._0_Project
             Texture2D obamaThumb = Raylib.LoadTexture("media/obama-thumb.png");
             Texture2D juanT = Raylib.LoadTexture("media/juan.png");
             Texture2D juanThumb = Raylib.LoadTexture("media/juan-thumb.png");
+            Texture2D johnporkT = Raylib.LoadTexture("media/johnpork.png");
+            Texture2D johnporkThumb = Raylib.LoadTexture("media/johnpork-thumb.png");
 
             Sound hit = Raylib.LoadSound("media/hit.ogg");                      //Move sound effects
             Sound heal = Raylib.LoadSound("media/heal.ogg");
@@ -159,7 +161,12 @@ namespace FightingGame3._0_Project
                 new Move("BACKFLIP CRUSH", 100, 90, hit),
                 new Move("QUAKE DANCE", 150, 80, hit),
                 new Move("'MAN'", 100, 100, heal),
-                new Move("DESTROY UNIVERSE", 200, 60, getdown)
+                new Move("DESTROY UNIVERSE", 200, 60, getdown),
+
+                new Move("BEACH ATTACK", 100, 90, hit),
+                new Move("KINDA SUS NGL", 150, 80, hit),
+                new Move("VIBE", 100, 100, reject),
+                new Move("EXECUTE", 200, 60, getdown)
             };
 
             Fighter[] fighters = new Fighter[20]{        //Array of fighters
@@ -169,8 +176,8 @@ namespace FightingGame3._0_Project
                 new Fighter("LINUS", 400, linusT, linusThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("OBAMA", 400, obamaT, obamaThumb, moves[16], moves[17], moves[18], moves[19]),
                 new Fighter("JUAN", 400, juanT, juanThumb, moves[20], moves[21], moves[22], moves[23]),
+                new Fighter("JOHN PORK", 400, johnporkT, johnporkThumb, moves[24], moves[25], moves[26], moves[27]),
 
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
