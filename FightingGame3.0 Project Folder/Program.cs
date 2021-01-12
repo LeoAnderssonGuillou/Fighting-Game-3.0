@@ -6,7 +6,7 @@ namespace FightingGame3._0_Project
 {
     class Program
     {
-        class Move
+        class Move      //Class for moves
         {
             public string name = "BONK";
             public int atk = 100;
@@ -21,7 +21,7 @@ namespace FightingGame3._0_Project
             }
         }
 
-        class Fighter
+        class Fighter       //Class for fighters
         {
             public string name = "FIGHTER";
             public int fullHP = 400;
@@ -79,7 +79,7 @@ namespace FightingGame3._0_Project
             bool oHide = false;
             int oTimesBlinked = 0;
 
-            int cooldown = 0;           //The cooldown int is used throughout to make sure a key press only causes 1 input
+            int cooldown = 0;           //The cooldown int is used throughout to make sure a real-world key press only causes 1 input
             int coolNormal = 20;
             int coolShort = 10;
             int coolLong = 60;
@@ -116,6 +116,7 @@ namespace FightingGame3._0_Project
             Texture2D yodaThumb = Raylib.LoadTexture("media/yoda-thumb.png");
 
             Sound hit = Raylib.LoadSound("media/hit.ogg");                      //Move sound effects
+            Sound heavy = Raylib.LoadSound("media/heavy.ogg");
             Sound heal = Raylib.LoadSound("media/heal.ogg");
             Sound bonk = Raylib.LoadSound("media/bonk.ogg");
             Sound bell = Raylib.LoadSound("media/bell.ogg");
@@ -124,6 +125,10 @@ namespace FightingGame3._0_Project
             Sound reject = Raylib.LoadSound("media/reject.ogg");
             Sound roast = Raylib.LoadSound("media/roast.ogg");
             Sound getdown = Raylib.LoadSound("media/getdown.ogg");
+            Sound cough = Raylib.LoadSound("media/cough.ogg");
+            Sound deathsound = Raylib.LoadSound("media/deathsound.ogg");
+            Sound dolph = Raylib.LoadSound("media/dolph.ogg");
+            Sound sus = Raylib.LoadSound("media/sus.ogg");
 
             Rectangle fSize = new Rectangle(0, 0, 500, 500);                //Rectangles used for drawing textures
             Rectangle thumbSize = new Rectangle(0, 0, 160, 150);
@@ -144,7 +149,7 @@ namespace FightingGame3._0_Project
                 new Move("BONK", 100, 90, bonk),
                 new Move("HIT PAN", 150, 80, bell),
                 new Move("CHEESEBORG", 100, 100, heal),
-                new Move("WAR CRIME", 200, 60, hit),
+                new Move("WAR CRIME", 200, 60, heavy),
 
                 new Move("MONKE FLIP", 100, 90, hit),
                 new Move("SPINNING GORILLA", 150, 80, hit),
@@ -154,10 +159,10 @@ namespace FightingGame3._0_Project
                 new Move("HISS", 500, 90, hit),
                 new Move("ROAST", 150, 80, roast),
                 new Move("MELON", 100, 100, heal),
-                new Move("MEGA CHONK", 200, 60, hit),
+                new Move("MEGA CHONK", 200, 60, heavy),
 
                 new Move("TECH TIP", 100, 90, hit),
-                new Move("STARE", 150, 80, hit),
+                new Move("STARE", 150, 80, boom),
                 new Move("RTX ON", 100, 100, reject),
                 new Move("DROP", 200, 60, hit),
 
@@ -167,28 +172,32 @@ namespace FightingGame3._0_Project
                 new Move("THE WORD", 200, 60, getdown),
 
                 new Move("BACKFLIP CRUSH", 100, 90, hit),
-                new Move("QUAKE DANCE", 150, 80, hit),
+                new Move("QUAKE DANCE", 150, 80, boom),
                 new Move("'MAN'", 100, 100, heal),
-                new Move("DESTROY UNIVERSE", 200, 60, getdown),
+                new Move("DESTROY UNIVERSE", 200, 60, heavy),
 
                 new Move("BEACH ATTACK", 100, 90, hit),
-                new Move("KINDA SUS NGL", 150, 80, hit),
+                new Move("KINDA SUS NGL", 150, 80, sus),
                 new Move("VIBE", 100, 100, reject),
                 new Move("EXECUTE", 200, 60, roast),
 
-                new Move("COUGH", 100, 90, hit),
+                new Move("COUGH", 100, 90, cough),
                 new Move("GO UP STAIRS", 150, 80, roast),
-                new Move("AUTISM RECHARGE", 100, 100, reject),
-                new Move("6 MILLION", 200, 60, hit),
+                new Move("AUTISM RECHARGE", 100, 100, cough),
+                new Move("6 MILLION", 200, 60, heavy),
 
-                new Move("TOP SPEED", 100, 90, hit),
+                new Move("TOP SPEED", 100, 90, dolph),
                 new Move("TAKE LOAN", 100, 100, heal),
-                new Move("DOLPHIN MAN", 200, 60, hit),
+                new Move("DOLPHIN MAN", 200, 60, dolph),
 
                 new Move("BEACH ATTACK", 100, 90, hit),
                 new Move("KINDA SUS NGL", 150, 80, hit),
                 new Move("VIBE", 100, 100, reject),
                 new Move("EXECUTE", 200, 60, getdown),
+
+                new Move("DEATH SOUND", 100, 90, deathsound),
+                new Move("KETAMINE", 100, 100, heal),
+                new Move("CBT", 200, 60, deathsound),
             };
 
             Fighter[] fighters = new Fighter[20]{        //Array of fighters
@@ -201,8 +210,8 @@ namespace FightingGame3._0_Project
                 new Fighter("JOHN PORK", 400, johnporkT, johnporkThumb, moves[24], moves[25], moves[26], moves[27]),
                 new Fighter("GRIEVOUS", 400, grievousT, grievousThumb, moves[28], moves[29], moves[30], moves[31]),
                 new Fighter("DOLPHIN", 400, dolphinT, dolphinThumb, moves[32], moves[0], moves[33], moves[34]),
-                new Fighter("ISRAEL", 400, israelT, israelThumb, moves[12], moves[13], moves[14], moves[15]),
-                new Fighter("YODA", 400, yodaT, yodaThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("ISRAEL", 400, israelT, israelThumb, moves[35], moves[36], moves[37], moves[38]),
+                new Fighter("YODA", 400, yodaT, yodaThumb, moves[39], moves[19], moves[40], moves[41]),
 
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
@@ -263,7 +272,7 @@ namespace FightingGame3._0_Project
                     CenteredText("CAMPAIGN", 400, 54, 413, 300);
                     CenteredText("BATLLE", 400, 54, 603, 300);
 
-                    page = 0;           //Some variables need to be reset when sent back to the main menu
+                    page = 0;           //Some variables need to be reset when sent back to the main menu after a battle
                     fDying = 0;
                     oDying = 0;
                     selectPos = new Vector2(0, 0);
@@ -302,8 +311,8 @@ namespace FightingGame3._0_Project
                         if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT) && selectPos.X > 0) { selectPos.X--; cooldown = coolShort; }
                         if (Raylib.IsKeyDown(KeyboardKey.KEY_UP) && selectPos.Y > 0) { selectPos.Y--; cooldown = coolShort; }
                     }
-                    Raylib.DrawRectangle(97 + 160 * (int)selectPos.X, 147 + 150 * (int)selectPos.Y, 166, 156, selectcolor);
-                    Raylib.DrawRectangle(103 + 160 * (int)selectPos.X, 153 + 150 * (int)selectPos.Y, 154, 144, Color.WHITE);
+                    Raylib.DrawRectangle(97 + 160 * (int)selectPos.X, 147 + 150 * (int)selectPos.Y, 166, 156, selectcolor);     //Selected box frame
+                    Raylib.DrawRectangle(103 + 160 * (int)selectPos.X, 153 + 150 * (int)selectPos.Y, 154, 144, Color.WHITE);    //Selected box background
 
                     switch (hasSelected)
                     {
