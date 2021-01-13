@@ -88,6 +88,7 @@ namespace FightingGame3._0_Project
             int hideBox = 0;
             int damage = 0;
             int randomMove = 1;
+            int randomOpp = 0;
             Random generator = new Random();
             Vector2 select = new Vector2(10, 510);
             int gameMode = 0;
@@ -201,6 +202,7 @@ namespace FightingGame3._0_Project
             };
 
             Fighter[] fighters = new Fighter[20]{        //Array of fighters
+                new Fighter("RANDOM", 400, walterT, walterThumb, moves[0], moves[0], moves[2], moves[0]),
                 new Fighter("WALTER", 400, walterT, walterThumb, moves[0], moves[1], moves[2], moves[3]),
                 new Fighter("GORILLA", 400, gorillaT, gorillaThumb, moves[4], moves[5], moves[6], moves[7]),
                 new Fighter("BIG FLOPPA", 800, floppaT, floppaThumb, moves[8], moves[9], moves[10], moves[11]),
@@ -210,10 +212,10 @@ namespace FightingGame3._0_Project
                 new Fighter("JOHN PORK", 400, johnporkT, johnporkThumb, moves[24], moves[25], moves[26], moves[27]),
                 new Fighter("GRIEVOUS", 400, grievousT, grievousThumb, moves[28], moves[29], moves[30], moves[31]),
                 new Fighter("DOLPHIN", 400, dolphinT, dolphinThumb, moves[32], moves[0], moves[33], moves[34]),
-                new Fighter("ISRAEL", 400, israelT, israelThumb, moves[35], moves[36], moves[37], moves[38]),
                 new Fighter("YODA", 400, yodaT, yodaThumb, moves[39], moves[19], moves[40], moves[41]),
+                new Fighter("ISRAEL", 400, israelT, israelThumb, moves[35], moves[36], moves[37], moves[38]),
 
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
+
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
@@ -314,33 +316,52 @@ namespace FightingGame3._0_Project
                     Raylib.DrawRectangle(97 + 160 * (int)selectPos.X, 147 + 150 * (int)selectPos.Y, 166, 156, selectcolor);     //Selected box frame
                     Raylib.DrawRectangle(103 + 160 * (int)selectPos.X, 153 + 150 * (int)selectPos.Y, 154, 144, Color.WHITE);    //Selected box background
 
+                    //This part of gameState 2 is dictated by if the player has selected their fighter or not.
                     switch (hasSelected)
                     {
-                        case false:
+                        case false:     //If they haven't, and press enter, a fighter is selected and its attributes applied.
                             CenteredText("SELECT YOUR FIGHTER", 1000, 70, 54, 0);
                             if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)
                             {
-                                fFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
-                                fHP = fFighter.fullHP;
+                                if (selectPos.X == 0 && selectPos.Y == 0)       //If RANDOM FIGHTER is selected
+                                {
+                                    fFighter = fighters[generator.Next(1, 11)];
+                                }
+                                else
+                                {
+                                    fFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
+                                }
+                                fHP = fFighter.fullHP;      //Apply attributes of selected fighter
                                 cooldown = coolNormal;
                                 lockedSelect = selectPos;
                                 selectPos = new Vector2(0, 0);
                                 selectcolor = selectcolor2;
                                 hasSelected = true;
-                                if (gameMode == 0)
+
+
+                                if (gameMode == 0)      //Game progression proceeds depending on if BATTLE or CAMPAIGN mode is active.
                                 {
                                     gameState = 3;
                                 }
                             }
                             break;
-                        case true:
+                        case true:    //If the player has chosen a figther, they may now chose the opponent. If they do (by pressing enter), the game moves on to gameState 3.  
                             CenteredText("SELECT YOUR OPPONENT", 1000, 70, 54, 0);
-                            //Raylib.DrawRectangle(103 + 160 * (int)lockedSelect.X, 153 + 150 * (int)lockedSelect.Y, 154, 144, boxgreen);
-                            Raylib.DrawRectangle(97 + 160 * (int)lockedSelect.X, 147 + 150 * (int)lockedSelect.Y, 166, 156, boxgreen);
+                            Raylib.DrawRectangle(103 + 160 * (int)lockedSelect.X, 153 + 150 * (int)lockedSelect.Y, 154, 144, boxgreen);
 
-                            if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0 && selectPos != lockedSelect)
+                            if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)
                             {
-                                oFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
+                                if (selectPos.X == 0 && selectPos.Y == 0)       //If RANDOM OPPONENT is selected
+                                {
+                                    randomOpp = generator.Next(1, 10);      //Makes sure randomized opponent is not the same as player's fighter
+                                    if (randomOpp >= fighterGrid[(int)lockedSelect.X, (int)lockedSelect.Y]) { randomOpp++; }
+                                    oFighter = fighters[randomOpp];
+
+                                }
+                                else
+                                {
+                                    oFighter = fighters[fighterGrid[(int)selectPos.X, (int)selectPos.Y]];
+                                }
                                 oHP = oFighter.fullHP;
                                 cooldown = coolNormal;
                                 gameState = 3;
@@ -355,13 +376,16 @@ namespace FightingGame3._0_Project
                         Raylib.DrawTextureRec(fighters[x + 10].thumbnail, thumbSize, new Vector2(100 + 160 * x, 450), Color.WHITE);
                         Raylib.DrawTextureRec(fighters[x + 15].thumbnail, thumbSize, new Vector2(100 + 160 * x, 600), Color.WHITE);
                     }
+                    Raylib.DrawRectangle(103, 153, 154, 144, Color.WHITE);
+                    CenteredText("?", 160, 85, 185, 100);
                 }
 
-                if (gameState == 3)                     //Announce "[FIGHTER] VS [OPPONENT]"
+                if (gameState == 3)                     //Announces "[FIGHTER] VS [OPPONENT]"
                 {
                     Raylib.ClearBackground(bordergrey1);
                     Raylib.DrawRectangle(10, 10, 980, 780, boxyellow);
 
+                    //Here, the page number can't be controlled by the player. It is instead controlled by time, using the cooldown variable.
                     switch (page)
                     {
                         case 0:
@@ -410,7 +434,7 @@ namespace FightingGame3._0_Project
                 }
 
 
-                if (gameState == 4)         //Battle
+                if (gameState == 4)         //The actual battle
                 {
                     Raylib.ClearBackground(bordergrey1);                    //Background
                     Raylib.DrawRectangle(10, 10, 980, 480, boxyellow);
@@ -426,8 +450,9 @@ namespace FightingGame3._0_Project
                     Raylib.DrawTextureRec(fFighter.image, fSize, fLocation, fColor);   //Draw figthers
                     Raylib.DrawTextureRec(oFighter.image, oSize, oLocation, oColor);
 
-                    if (fighting == true)
+                    if (fighting == true)       //As long as fighting = true, the game will not move on from letting the fighters take turns attacking.
                     {
+                        //Using this switch, the page number dictates what part of the round is happening.
                         switch (page)
                         {
                             case 1:
@@ -475,6 +500,7 @@ namespace FightingGame3._0_Project
                                 if (fMove == fFighter.move3)             //and play sfx. Happnes exactly once per round.
                                 {
                                     fHP = fHP + fMove.atk;
+                                    damage = 1;
                                     if (fHP > fFighter.fullHP)
                                     {
                                         fHP = fFighter.fullHP;
@@ -520,7 +546,7 @@ namespace FightingGame3._0_Project
                                 {
                                     fighting = false;
                                     won = true;
-                                    oDying = 249;
+                                    oDying = 255;
                                     cooldown = coolLong;
                                     page = 1;
                                     break;
@@ -547,6 +573,7 @@ namespace FightingGame3._0_Project
                                 if (oMove == oFighter.move3)              //Happnes exactly once per round.
                                 {
                                     oHP = oHP + oMove.atk;
+                                    damage = 1;
                                     if (oHP > oFighter.fullHP)
                                     {
                                         oHP = oFighter.fullHP;
@@ -586,12 +613,12 @@ namespace FightingGame3._0_Project
                                     Text("MISS!");
                                 }
                                 break;
-                            case 9:                                       //Check if lost / Next round
+                            case 9:                                       //Check if lost / Next round (by setting page to 1)
                                 if (fHP <= 0)
                                 {
                                     fighting = false;
                                     won = false;
-                                    fDying = 247;
+                                    fDying = 255;
                                     cooldown = coolLong;
                                     page = 1;
                                     break;
@@ -600,6 +627,7 @@ namespace FightingGame3._0_Project
                                 break;
                         }
                     }
+                    //The following code runs in gameState 4 when the player has won or lost.
                     else
                     {                               //Tell who won
                         switch (won)
@@ -617,18 +645,22 @@ namespace FightingGame3._0_Project
                         }
                     }
 
+                    //Handles the death/fade animation of a fighter when it dies
                     if (fDying > 0)
                     {
+                        fDying -= 12;
+                        if (fDying < 0) { fDying = 0; }
                         fColor = new Color(255, 255, 255, fDying);
-                        fDying -= 8;
                     }
                     if (oDying > 0)
                     {
+                        oDying -= 12;
+                        if (oDying < 0) { oDying = 0; }
                         oColor = new Color(255, 255, 255, oDying);
-                        oDying -= 8;
                     }
 
-                    if (fDamaged == true)               //Handles blinking of player's fighter
+                    //Handles blinking/damage animation of player's fighter
+                    if (fDamaged == true)
                     {
                         if (fBlinkCooldown <= 0)
                         {
@@ -645,7 +677,8 @@ namespace FightingGame3._0_Project
                             fDamaged = false;
                         }
                     }
-                    if (oDamaged == true)               //Handles blinking of opponent
+                    //Handles blinking/damage animation of opponent
+                    if (oDamaged == true)
                     {
                         if (oBlinkCooldown <= 0)
                         {
@@ -666,7 +699,7 @@ namespace FightingGame3._0_Project
                     if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)   //When enter is pressed:
                     {                                                               //-Go to next page
                         page++;                                                     //-Make sure it doesn't instantly happen again
-                        cooldown = coolNormal;                                           //-Create illusion of text being written out character by character
+                        cooldown = coolNormal;                                      //-Create illusion of text being written out character by character using hideBox
                         hideBox = 980;
                     }
                     if (hideBox > 0)
@@ -676,24 +709,34 @@ namespace FightingGame3._0_Project
                     Raylib.DrawRectangle(10 + 980 - hideBox, 510, hideBox, 280, boxgreen);
                 }
 
-                if (cooldown > 0)
+                if (cooldown > 0)   //Here's where the cooldown int gets closer to 0 every frame
                 {
                     cooldown--;
                 }
                 Raylib.EndDrawing();
             }
         }
-        static void Text(string text)                          //Writes out text in the textbox
+
+        //Writes out text in the textbox
+        static void Text(string text)
         {
             Raylib.DrawText(text, 20, 520, 48, Color.BLACK);
         }
+        //Writes out what move is being used in the textbox
         static void MoveText(string name, string move)
         {
             Raylib.DrawText(name + " USES " + move + "!", 20, 520, 48, Color.BLACK);
         }
 
-        static int Attack(Random generator, int attack, int accuracy)     //Generates damage/result based
-        {                                                                 //on properties of active move
+        //Allows text to easely be drawn centered within a given box (x-axis only)
+        static void CenteredText(string text, int fullWidth, int fontSize, int yPos, int xStart)
+        {
+            Raylib.DrawText(text, xStart + (fullWidth - Raylib.MeasureText(text, fontSize)) / 2, yPos, fontSize, Color.BLACK);
+        }
+
+        //Generates damage/result based on properties of active move
+        static int Attack(Random generator, int attack, int accuracy)
+        {
             int damage = generator.Next(5, 11) * attack / 10;
             int unlucky = generator.Next(1, 101);
             if (unlucky > accuracy)
@@ -703,6 +746,7 @@ namespace FightingGame3._0_Project
             return damage;
         }
 
+        //Handles the player's selecting a move
         static Vector2 Select(Vector2 pos, Color col)
         {
             if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
@@ -725,13 +769,7 @@ namespace FightingGame3._0_Project
             return pos;
         }
 
-        //Allows text to easely be drawn centered within a given box (x-axis only)
-        static void CenteredText(string text, int fullWidth, int fontSize, int yPos, int xStart)
-        {
-            Raylib.DrawText(text, xStart + (fullWidth - Raylib.MeasureText(text, fontSize)) / 2, yPos, fontSize, Color.BLACK);
-        }
-
-        //Changes fullHP and attack power of a fighter using a given float (1.25f => 25% power increase)
+        //Changes fullHP and attack power of a fighter using a given float (i.e. 1.25f => 25% power increase)
         static Fighter ChangePower(Fighter fighter, float power)
         {
             fighter.fullHP = (int)(fighter.fullHP * power);
