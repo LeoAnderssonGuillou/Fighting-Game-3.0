@@ -93,7 +93,8 @@ namespace FightingGame3._0_Project
             Vector2 select = new Vector2(10, 510);
             int gameMode = 0;
 
-            Texture2D walterT = Raylib.LoadTexture("media/walter.png");             //Fighter textures
+            Texture2D blankThumb = Raylib.LoadTexture("media/blank.png");       //Fighter textures
+            Texture2D walterT = Raylib.LoadTexture("media/walter.png");
             Texture2D walterThumb = Raylib.LoadTexture("media/walter-thumb.png");
             Texture2D gorillaT = Raylib.LoadTexture("media/gorilla.png");
             Texture2D gorillaThumb = Raylib.LoadTexture("media/gorilla-thumb.png");
@@ -152,78 +153,72 @@ namespace FightingGame3._0_Project
                 new Move("CHEESEBORG", 100, 100, heal),
                 new Move("WAR CRIME", 200, 60, heavy),
 
-                new Move("MONKE FLIP", 100, 90, hit),
-                new Move("SPINNING GORILLA", 150, 80, hit),
-                new Move("REJECT HUMANITY", 100, 100, reject),
-                new Move("CHIMP EVENT", 200, 60, chimpevent),
+                new Move("MONKE FLIP", 95, 90, hit),
+                new Move("SPINNING GORILLA", 145, 80, hit),
+                new Move("REJECT HUMANITY", 110, 100, reject),
+                new Move("CHIMP EVENT", 250, 50, chimpevent),
 
-                new Move("HISS", 500, 90, hit),
-                new Move("ROAST", 150, 80, roast),
+                new Move("HISS", 75, 90, hit),
+                new Move("ROAST", 125, 80, roast),
                 new Move("MELON", 100, 100, heal),
-                new Move("MEGA CHONK", 200, 60, heavy),
+                new Move("MEGA CHONK", 175, 60, heavy),
 
-                new Move("TECH TIP", 100, 90, hit),
-                new Move("STARE", 150, 80, boom),
-                new Move("RTX ON", 100, 100, reject),
-                new Move("DROP", 200, 60, hit),
+                new Move("TECH TIP", 100, 100, hit),
+                new Move("STARE", 150, 85, boom),
+                new Move("RTX ON", 130, 100, reject),
+                new Move("DROP", 200, 70, hit),
 
-                new Move("OBAMIUM", 100, 90, bell),
+                new Move("OBAMIUM", 95, 95, bell),
                 new Move("LAST NAME", 150, 80, hit),
                 new Move("OBAMACARE", 100, 100, heal),
-                new Move("THE WORD", 200, 60, getdown),
+                new Move("THE WORD", 250, 50, getdown),
 
-                new Move("BACKFLIP CRUSH", 100, 90, hit),
-                new Move("QUAKE DANCE", 150, 80, boom),
-                new Move("'MAN'", 100, 100, heal),
-                new Move("DESTROY UNIVERSE", 200, 60, heavy),
+                new Move("BACKFLIP CRUSH", 115, 90, hit),
+                new Move("QUAKE DANCE", 160, 70, boom),
+                new Move("'MAN'", 80, 100, heal),
+                new Move("DESTROY UNIVERSE", 1000, 10, heavy),
 
-                new Move("BEACH ATTACK", 100, 90, hit),
-                new Move("KINDA SUS NGL", 150, 80, sus),
-                new Move("VIBE", 100, 100, reject),
+                new Move("BEACH BITE", 125, 80, hit),
+                new Move("KINDA SUS NGL", 160, 70, sus),
+                new Move("VIBE", 90, 100, reject),
                 new Move("EXECUTE", 200, 60, roast),
 
-                new Move("COUGH", 100, 90, cough),
-                new Move("GO UP STAIRS", 150, 80, roast),
-                new Move("AUTISM RECHARGE", 100, 100, cough),
-                new Move("6 MILLION", 200, 60, heavy),
+                new Move("COUGH", 110, 100, cough),
+                new Move("GO UP STAIRS", 170, 80, roast),
+                new Move("AUTISM RECHARGE", 120, 100, cough),
+                new Move("6 MILLION", 250, 60, heavy),
 
-                new Move("TOP SPEED", 100, 90, dolph),
+                new Move("TOP SPEED", 110, 100, dolph),
                 new Move("TAKE LOAN", 100, 100, heal),
-                new Move("DOLPHIN MAN", 200, 60, dolph),
+                new Move("DOLPHIN MAN", 160, 75, dolph),
 
-                new Move("BEACH ATTACK", 100, 90, hit),
-                new Move("KINDA SUS NGL", 150, 80, hit),
-                new Move("VIBE", 100, 100, reject),
-                new Move("EXECUTE", 200, 60, getdown),
-
-                new Move("DEATH SOUND", 100, 90, deathsound),
-                new Move("KETAMINE", 100, 100, heal),
-                new Move("CBT", 200, 60, deathsound),
+                new Move("DEATH SOUND", 120, 90, deathsound),
+                new Move("KETAMINE", 110, 100, heal),
+                new Move("CBT", 400, 50, deathsound),
             };
 
             Fighter[] fighters = new Fighter[20]{        //Array of fighters
                 new Fighter("RANDOM", 400, walterT, walterThumb, moves[0], moves[0], moves[2], moves[0]),
                 new Fighter("WALTER", 400, walterT, walterThumb, moves[0], moves[1], moves[2], moves[3]),
+                new Fighter("BIG FLOPPA", 600, floppaT, floppaThumb, moves[8], moves[9], moves[10], moves[11]),
+                new Fighter("LINUS", 350, linusT, linusThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("GORILLA", 400, gorillaT, gorillaThumb, moves[4], moves[5], moves[6], moves[7]),
-                new Fighter("BIG FLOPPA", 800, floppaT, floppaThumb, moves[8], moves[9], moves[10], moves[11]),
-                new Fighter("LINUS", 400, linusT, linusThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("OBAMA", 400, obamaT, obamaThumb, moves[16], moves[17], moves[18], moves[19]),
-                new Fighter("JUAN", 400, juanT, juanThumb, moves[20], moves[21], moves[22], moves[23]),
-                new Fighter("JOHN PORK", 400, johnporkT, johnporkThumb, moves[24], moves[25], moves[26], moves[27]),
-                new Fighter("GRIEVOUS", 400, grievousT, grievousThumb, moves[28], moves[29], moves[30], moves[31]),
+                new Fighter("JUAN", 450, juanT, juanThumb, moves[20], moves[21], moves[22], moves[23]),
+                new Fighter("JOHN PORK", 450, johnporkT, johnporkThumb, moves[24], moves[25], moves[26], moves[27]),
+                new Fighter("GRIEVOUS", 300, grievousT, grievousThumb, moves[28], moves[29], moves[30], moves[31]),
                 new Fighter("DOLPHIN", 400, dolphinT, dolphinThumb, moves[32], moves[0], moves[33], moves[34]),
-                new Fighter("YODA", 400, yodaT, yodaThumb, moves[39], moves[19], moves[40], moves[41]),
-                new Fighter("ISRAEL", 400, israelT, israelThumb, moves[35], moves[36], moves[37], moves[38]),
+                new Fighter("YODA", 300, yodaT, yodaThumb, moves[35], moves[19], moves[36], moves[37]),
 
-
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
-                new Fighter("LINUS", 400, linusT, walterThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
             };
 
             Color bordergrey1 = new Color(214, 214, 214, 255);      //Colors
