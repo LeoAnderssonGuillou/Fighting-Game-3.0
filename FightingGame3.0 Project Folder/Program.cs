@@ -184,7 +184,7 @@ namespace FightingGame3._0_Project
                 new Move("EXECUTE", 200, 60, roast),
 
                 new Move("COUGH", 110, 100, cough),
-                new Move("GO UP STAIRS", 170, 80, roast),
+                new Move("GO UP STAIRS", 170, 80, boom),
                 new Move("AUTISM RECHARGE", 120, 100, cough),
                 new Move("6 MILLION", 250, 60, heavy),
 
@@ -210,8 +210,8 @@ namespace FightingGame3._0_Project
                 new Fighter("DOLPHIN", 400, dolphinT, dolphinThumb, moves[32], moves[0], moves[33], moves[34]),
                 new Fighter("YODA", 300, yodaT, yodaThumb, moves[35], moves[19], moves[36], moves[37]),
 
-                new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
-                new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
+                new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),  //There needs to be 20 fighters for the game to function.
+                new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),  //These placeholders can easily be modified to add new characters.
                 new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
@@ -220,6 +220,7 @@ namespace FightingGame3._0_Project
                 new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
                 new Fighter("LINUS", 400, linusT, blankThumb, moves[12], moves[13], moves[14], moves[15]),
             };
+            int playableFighters = 11;  //Current number of finished fighters
 
             Color bordergrey1 = new Color(214, 214, 214, 255);      //Colors
             Color bordergrey2 = new Color(150, 150, 150, 255);
@@ -280,7 +281,7 @@ namespace FightingGame3._0_Project
                     oColor = Color.WHITE;
                     selectcolor = boxgreen;
 
-                    if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0)
+                    if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER) && cooldown == 0 && gameMode == 1)
                     {
                         gameState = 2;
                         cooldown = coolNormal;
@@ -308,6 +309,13 @@ namespace FightingGame3._0_Project
                         if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT) && selectPos.X > 0) { selectPos.X--; cooldown = coolShort; }
                         if (Raylib.IsKeyDown(KeyboardKey.KEY_UP) && selectPos.Y > 0) { selectPos.Y--; cooldown = coolShort; }
                     }
+
+                    //Makes only the finished fighters selectable
+                    if (fighterGrid[(int)selectPos.X, (int)selectPos.Y] > playableFighters - 1)
+                    {
+                        selectPos.Y--;
+                    }
+
                     Raylib.DrawRectangle(97 + 160 * (int)selectPos.X, 147 + 150 * (int)selectPos.Y, 166, 156, selectcolor);     //Selected box frame
                     Raylib.DrawRectangle(103 + 160 * (int)selectPos.X, 153 + 150 * (int)selectPos.Y, 154, 144, Color.WHITE);    //Selected box background
 
